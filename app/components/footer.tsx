@@ -15,8 +15,7 @@ export default function Footer() {
             <div className="md:col-span-1">
               <h3 className="text-2xl font-bold mb-4">SunPay</h3>
               <p className="text-sm leading-relaxed text-black/90">
-                Empowering seamless financial transactions through secure payments, easy money transfers, 
-                and tools designed to simplify your financial management and boost productivity.
+                SunPay makes it effortless to pay directly from your device — whether it's topping up your wallet, sending money to friends, or managing bills. Secure, fast, and designed to simplify your daily financial activities.
               </p>
             </div>
 
@@ -53,7 +52,7 @@ export default function Footer() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
                   <Image src="/images/clock.png" alt="Clock" width={18} height={18} className="flex-shrink-0" />
-                  <span className="text-sm text-black/90">Sun-Fri: 9:00-5:00</span>
+                  <span className="text-sm text-black/90">Sun-Fri: 8:00-10:00</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Image src="/images/sms.png" alt="Email" width={18} height={18} className="flex-shrink-0" />
@@ -61,13 +60,13 @@ export default function Footer() {
                     href="mailto:info@example.com"
                     className="text-sm text-black/90 hover:text-black transition-colors"
                   >
-                    info@payyed.com
+                    info@sunpay.com
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <Image src="/images/call.png" alt="Phone" width={18} height={18} className="flex-shrink-0" />
                   <a href="tel:+2348162367679" className="text-sm text-black/90 hover:text-black transition-colors">
-                    (+234) 816 2367 679
+                    (+234) 234 567 8901
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
