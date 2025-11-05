@@ -1,109 +1,85 @@
-"use client"
-
 import Image from "next/image"
 
 export default function ValuesSection() {
+  const values = [
+    {
+      icon: "/images/book.png",
+      title: "Personalized Study Plans",
+      description: "Study plans to help you achieve your academic goals.",
+    },
+    {
+      icon: "/images/diagram.png",
+      title: "Actionable Insights",
+      description: "Track your performances with detailed analytics in real-time.",
+    },
+    {
+      icon: "/images/note-2.png",
+      title: "Smart Content Access",
+      description: "Study with AI Chat Buddy, designed to simplify your learning journey.",
+    },
+    {
+      icon: "/images/people.png",
+      title: "Peer Learning Support",
+      description: "Learn better together by adding up to four study partners.",
+    },
+    {
+      icon: "/images/star.png",
+      title: "Motivation & Accountability",
+      description: "Stay engaged with streaks, badges, and progress tracking.",
+    },
+    {
+      icon: "/images/lamp-charge.png",
+      title: "Plan smarter, stay on track.",
+      description: "Get the resources you need, when you need them.",
+    },
+  ]
+
   return (
-    <section className="py-16">
-      <div className="relative w-full">
-        {/* Main dark section extending to right edge */}
-        <div className="ml-0 lg:ml-80">
-          <div className="bg-blue-900 text-white p-8 lg:p-12 relative">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl">
-              {/* Values Content - Left side of dark section */}
-              <div className="lg:col-span-2 space-y-8">
-                <div>
-                  <div className="text-sm font-medium text-blue-300 mb-4 tracking-wider">VALUES</div>
-                  <h2 className="text-3xl lg:text-4xl font-bold leading-tight">
-                    We Believe in
-                    <br />
-                    This Quality
-                  </h2>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Expertise */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-3 h-3 bg-orange-500 transform rotate-45"></div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Expertise</h3>
-                      <p className="text-blue-300 leading-relaxed">
-                        Providing trusted guidance and insights in oil and gas supply consulting, advisory, and
-                        facilitation services through our seasoned professionals.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Reliability */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-3 h-3 bg-orange-500 transform rotate-45"></div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Reliability</h3>
-                      <p className="text-blue-300 leading-relaxed">
-                        Delivering high-quality services and support to clients, ensuring reliable oil and gas supply
-                        through effective partnerships that navigate complexity and mitigate risk.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Collaboration */}
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="w-3 h-3 bg-orange-500 transform rotate-45"></div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Collaboration</h3>
-                      <p className="text-blue-300 leading-relaxed">
-                        Fostering strong partnerships and stakeholder relationships, building trust and rapport while
-                        facilitating discussions to reach mutually beneficial agreements.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Industrial Plant Image - Right side of dark section */}
-              <div className="lg:col-span-1 relative">
-                <div className="h-full min-h-[300px] lg:min-h-[600px] relative -mt-25">
-                  {" "}
-                  {/* Changed height and added negative margin */}
-                  <Image src="/images/aboutimg.jpg" alt="Industrial oil refinery plant" fill className="object-cover" />
-                </div>
-              </div>
-            </div>
+    <section className="w-full px-4 py-12 sm:py-16 md:px-8 md:py-20">
+      <div className="relative mx-auto max-w-[1400px] bg-[#FFF0F1] rounded-3xl px-6 py-12 sm:px-10 md:px-12 md:py-16 lg:px-16 lg:py-20">
+        {/* Badge */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center gap-2 bg-[#AC222D] text-white text-sm font-medium px-4 py-2 rounded-full">
+            <span className="text-lg">✦</span>
+            <span>OUR CORE VALUES</span>
           </div>
         </div>
 
-        {/* Orange Experience Counter - Extended to left edge */}
-        <div className="absolute bottom-0 left-0 z-10 w-80">
-          <div className="relative h-full bg-orange-500 text-white p-8 lg:p-12">
-            <div className="text-center">
-              <div className="text-6xl lg:text-7xl font-bold mb-4">19</div>
-              <div className="text-lg font-medium leading-tight">
-                Years of Energy
-                <br />
-                Industry Experience
+        {/* Heading */}
+        <h2 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-16 max-w-2xl mx-auto leading-tight">
+          What Makes Us Unique From Others
+        </h2>
+
+        {/* Values Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-10 max-w-6xl mx-auto">
+          {values.map((value, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col items-start justify-start text-left min-h-[260px]"
+            >
+              {/* Icon */}
+              <div className="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center mb-6 text-[#BC1823]">
+                <Image
+                  src={value.icon || "/placeholder.svg"}
+                  alt={value.title}
+                  width={28}
+                  height={28}
+                  className="w-7 h-7"
+                />
               </div>
-            </div>
 
-            {/* Decorative squares */}
-            <div className="absolute top-4 right-4 flex flex-col space-y-2">
-              <div className="w-4 h-4 bg-white"></div>
-              <div className="w-4 h-4 bg-white"></div>
+              {/* Title */}
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                {value.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                {value.description}
+              </p>
             </div>
-            <div className="absolute bottom-4 right-8 flex space-x-2">
-              <div className="w-4 h-4 bg-white"></div>
-              <div className="w-4 h-4 bg-white"></div>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* Dark Section Extended to right edge */}
-        <div className="absolute right-0 top-0 bottom-0 w-full bg-blue-900 -z-10"></div>
       </div>
     </section>
   )

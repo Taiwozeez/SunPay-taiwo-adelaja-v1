@@ -2,108 +2,99 @@
 
 import { useState } from "react"
 
+interface FAQItem {
+  question: string
+  answer: string
+}
+
+const faqItems: FAQItem[] = [
+  {
+    question: "What is [APP NAME]?",
+    answer:
+      "[APP NAME] is your ultimate study companion, designed to help you manage your schedules, access curated study materials, and stay motivated with features like quizzes, peer prompts, and AI-powered recommendations.",
+  },
+  {
+    question: "How do I create a study schedule?",
+    answer:
+      "You can create a study schedule by navigating to the Schedule section, selecting your subjects, and using our AI-powered scheduler to automatically organize your study sessions based on your preferences and goals.",
+  },
+  {
+    question: "Are the practice quizzes free?",
+    answer:
+      "Yes, all practice quizzes are completely free for all users. You can access unlimited quizzes across all subjects to test your knowledge and track your progress.",
+  },
+  {
+    question: "How does the Peer Snitch/Prompts feature work?",
+    answer:
+      "The Peer Snitch/Prompts feature allows you to connect with up to four study partners. You can share study materials, get prompts from peers, and collaborate on learning together.",
+  },
+]
+
 export default function FAQ() {
-  const [openFAQ, setOpenFAQ] = useState<number | null>(1) // Second FAQ is open by default
+  const [expandedIndex, setExpandedIndex] = useState(0)
 
-  const faqs = [
-    {
-      question: "What does Corevault specialize in?",
-      answer:
-        "Corevault Energy Ltd specializes in mediation and advisory services for the oil and gas industry, facilitating discussions between parties, resolving conflicts, and providing expert guidance on complex energy sector disputes and negotiations.",
-    },
-    {
-      question: "How can Corevault assist with oil and gas disputes?",
-      answer:
-        "Corevault offers expertise in conflict resolution, dispute mediation, and negotiation management, enabling parties to reach mutually beneficial agreements while maintaining professional relationships in the energy sector.",
-    },
-    {
-      question: "Does Corevault support energy transition projects?",
-      answer:
-        "Yes, Corevault provides mediation and advisory services for energy transition projects, helping stakeholders navigate complex negotiations around renewable energy initiatives and sustainable practice implementations.",
-    },
-    {
-      question: "How can Corevault help with regulatory compliance issues?",
-      answer:
-        "Corevault assists in mediating regulatory compliance disputes, facilitating discussions between companies and regulatory bodies, and providing advisory services to ensure smooth resolution of compliance-related conflicts.",
-    },
-    {
-      question: "What approach does Corevault take to conflict resolution?",
-      answer:
-        "Corevault employs a trust-building approach, focusing on creating rapport between parties, identifying creative solutions, and managing negotiations to achieve sustainable resolutions that benefit all stakeholders involved.",
-    },
-  ]
-
-  const toggleFAQ = (index: number) => {
-    setOpenFAQ(openFAQ === index ? null : index)
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? -1 : index)
   }
 
   return (
-    <section className="py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid lg:grid-cols-5 gap-12 items-start">
-          {/* Left Side - FAQ Header with blue background */}
-          <div className="lg:col-span-2 p-8 rounded-lg mt-8">
-            <div className="space-y-6">
-              <div>
-                <p className="text-orange-500 text-sm font-medium mb-2 tracking-wide -mt-2">FAQ</p>
-                <h2 className="text-4xl md:text-5xl font-bold text-blue-900 leading-tight">
-                  Questions
-                  <br />
-                  From People
-                </h2>
-              </div>
+    <section
+      id="faqs"
+      className="mx-auto max-w-7xl rounded-[2rem] bg-pink-100 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 sm:py-20 mb-20"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
+        {/* Left Side */}
+        <div className="flex flex-col justify-between text-center md:text-left">
+          <div>
+            <p className="text-sm md:text-base font-semibold text-[#BC1823] uppercase tracking-wide">
+              ANSWERS TO
+            </p>
+            <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-snug">
+              Frequently Asked <br className="hidden sm:block" />
+              Questions
+            </h2>
+            <p className="mt-6 text-gray-700 text-base sm:text-lg max-w-md mx-auto md:mx-0 leading-relaxed">
+              Get all your questions answered with ease. Explore everything you need to know about using{" "}
+              <span className="font-semibold">[APP NAME]</span>!
+            </p>
+          </div>
 
-              <button className="bg-orange-500 text-white px-6 py-3 rounded hover:bg-orange-600 transition-colors font-medium mt-8">
-                Ask A Question
+          <button className="mt-10 mx-auto md:mx-0 inline-flex w-fit items-center gap-3 rounded-full bg-[#BC1823] px-8 py-4 text-base md:text-lg font-semibold text-white shadow-md transition-transform hover:scale-105">
+            Contact Us
+            <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Right Side - FAQ Accordion */}
+        <div className="space-y-6 w-full">
+          {faqItems.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-2xl border border-gray-200 bg-white transition-all hover:shadow-md w-full"
+            >
+              <button
+                onClick={() => toggleExpand(index)}
+                className="flex w-full items-center justify-between px-6 sm:px-8 py-5 sm:py-6 text-left text-base sm:text-lg font-semibold text-gray-900 hover:bg-gray-50 rounded-2xl"
+              >
+                {item.question}
+                <span
+                  className={`text-2xl sm:text-3xl text-[#1A1A1A] transition-transform duration-300 ${
+                    expandedIndex === index ? "rotate-45" : ""
+                  }`}
+                >
+                  +
+                </span>
               </button>
-            </div>
-          </div>
 
-          {/* Right Side - FAQ Accordion with white background */}
-          <div className="lg:col-span-3 relative bg-gray-100 px-8 py-12 rounded-lg -mr-4 lg:-mr-8 xl:-mr-16 -mt-4">
-            {/* Decorative elements in top-right */}
-            <div className="absolute -top-4 -right-4 z-10">
-              <div className="w-8 h-8 bg-blue-900 rounded"></div>
-            </div>
-            <div className="absolute -top-8 -right-8 z-10">
-              <div className="w-6 h-6 bg-blue-900 rounded"></div>
-            </div>
-
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <div key={index} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                  <button
-                    onClick={() => toggleFAQ(index)}
-                    className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
-                  >
-                    <span className="font-medium text-blue-900 text-lg">{faq.question}</span>
-                    <svg
-                      className={`w-5 h-5 text-orange-500 transition-transform duration-300 ${
-                        openFAQ === index ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      openFAQ === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <div className="px-6 pb-4">
-                      <div className="border-t border-gray-200 pt-4">
-                        <p className="text-blue-700 leading-relaxed">{faq.answer}</p>
-                      </div>
-                    </div>
-                  </div>
+              {expandedIndex === index && (
+                <div className="border-t border-gray-200 px-6 sm:px-8 py-5 sm:py-6 text-gray-700 text-sm sm:text-base leading-relaxed">
+                  {item.answer}
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,24 +1,24 @@
 // import Header from '@/components/Header'
-import Hero from './components/Home/Hero'
-import AboutSection from './components/Home/AboutSection'
-import ValuesSection from './components/Home/ValuesSection'
-import ServicesSection from './components/Home/ServiceSection'
-import TestimonialSection from './components/Home/TestimonialSection.tsx'
-import FAQ from './components/Home/FAQ'
-import Newsletter from './components/Home/Newslettter'
+import Hero from "./components/Home/Hero"
+import MakePayment from "./components/Home/MakePayment"
+import HowItWorks from "./components/Home/HowItWorks"
+import AddMoney from "./components/Home/AddMoney"
+// import CTA from "./components/Home/CTA"
+// import CTA2 from "./components/Home/CTA2"
+// import Testimonies from "./components/Home/Testimonial"
+// import FAQ from "./components/Home/FAQ"
 // import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* <Header /> */}
-        <Hero />
-        <AboutSection />
-        <ValuesSection />
-        <ServicesSection />
-        <TestimonialSection />
-        <FAQ />
-        <Newsletter />
+      <Hero />
+      <MakePayment />
+      <HowItWorks />
+      <AddMoney />
+      
+      
       {/* <Footer /> */}
     </div>
   )

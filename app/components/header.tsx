@@ -1,188 +1,146 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import Image from "next/image"
+import { useState, useEffect } from "react"
+import { usePathname, useRouter } from "next/navigation"
 
 export default function Header() {
-  const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("make-payment")
+  const pathname = usePathname()
+  const router = useRouter()
 
-  const isActive = (path: string) => pathname === path
+  const navItems = [
+    { id: "make-payment", label: "Make Payment", path: "/#make-payment" },
+    { id: "add-money", label: "Add Money", path: "/#add-money" },
+    { id: "check-payment-history", label: "Payment History/Keycode", path: "/payment-history" },
+    { id: "how-it-works", label: "How It Works", path: "/#how-it-works" },
+    { id: "help", label: "Help", path: "/help" },
+  ]
+
+  // Track active section on scroll and active page links
+  useEffect(() => {
+    const handleScroll = () => {
+      navItems.forEach(({ id, path }) => {
+        if (path.startsWith("/#")) {
+          const el = document.getElementById(id)
+          if (el) {
+            const rect = el.getBoundingClientRect()
+            if (rect.top <= 120 && rect.bottom >= 120) {
+              setActiveSection(id)
+            }
+          }
+        } else if (pathname === path) {
+          setActiveSection(id)
+        }
+      })
+    }
+
+    handleScroll() // run once on load
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [pathname])
+
+  const handleNavClick = (path: string, id?: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    setMobileMenuOpen(false)
+
+    if (path.startsWith("/#") && pathname === "/") {
+      const el = document.getElementById(id!)
+      if (el) el.scrollIntoView({ behavior: "smooth" })
+    } else {
+      router.push(path)
+    }
+  }
 
   return (
-    <header className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16">
+    <>
+      <style jsx global>{`
+        html {
+          scroll-behavior: smooth;
+        }
+      `}</style>
+
+      <header className="bg-yellow-500 text-black sticky top-0 z-50">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/">
-              <Image
-                src="/images/corevault-logo.jpg"
-                alt="CoreVault Logo"
-                width={140}
-                height={40}
-                className="h-30 w-auto"
-              />
-            </Link>
-          </div>
+          <span className="text-lg font-bold">SunPay</span>
 
-          {/* Desktop Navigation Menu */}
-          <div className="hidden md:flex items-center flex-1 h-full">
-            <div className="flex-1 flex justify-end">
-              <nav className="flex items-center h-full mr-6">
-                <Link
-                  href="/"
-                  className={`px-3 py-2 text-sm transition-colors h-full flex items-center ${
-                    isActive("/") ? "text-blue-900 font-extrabold" : "text-blue-700 hover:text-blue-900 font-medium"
-                  }`}
-                >
-                  Home
-                </Link>
-                <span className="text-blue-300 mx-1 h-full flex items-center">•</span>
-                <Link
-                  href="/about"
-                  className={`px-3 py-2 text-sm transition-colors h-full flex items-center ${
-                    isActive("/about")
-                      ? "text-blue-900 font-extrabold"
-                      : "text-blue-700 hover:text-blue-900 font-medium"
-                  }`}
-                >
-                  About
-                </Link>
-                <span className="text-blue-300 mx-1 h-full flex items-center">•</span>
-                <Link
-                  href="/services"
-                  className={`px-3 py-2 text-sm transition-colors h-full flex items-center ${
-                    isActive("/services")
-                      ? "text-blue-900 font-extrabold"
-                      : "text-blue-700 hover:text-blue-900 font-medium"
-                  }`}
-                >
-                  Services
-                </Link>
-                <span className="text-blue-300 mx-1 h-full flex items-center">•</span>
-                <Link
-                  href="/projects"
-                  className={`px-3 py-2 text-sm transition-colors h-full flex items-center ${
-                    isActive("/projects")
-                      ? "text-blue-900 font-extrabold"
-                      : "text-blue-700 hover:text-blue-900 font-medium"
-                  }`}
-                >
-                  Projects
-                </Link>
-                <span className="text-blue-300 mx-1 h-full flex items-center">•</span>
-                <Link
-                  href="/contact"
-                  className={`px-3 py-2 text-sm transition-colors h-full flex items-center ${
-                    isActive("/contact")
-                      ? "text-blue-900 font-extrabold"
-                      : "text-blue-700 hover:text-blue-900 font-medium"
-                  }`}
-                >
-                  Contact
-                </Link>
-              </nav>
-            </div>
-
-            {/* Request A Quote Button - Updated with conditional colors */}
-            <div className="h-full">
-              <Link
-                href="/quote"
-                className={`text-white px-6 h-full flex items-center text-sm font-bold transition-colors ${
-                  isActive("/quote") ? "bg-blue-900 hover:bg-blue-800" : "bg-orange-500 hover:bg-orange-600"
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navItems.map(({ id, label, path }) => (
+              <a
+                key={id}
+                href={path}
+                onClick={handleNavClick(path, id)}
+                className={`relative text-sm font-medium transition-colors duration-200 ${
+                  activeSection === id
+                    ? "after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-black"
+                    : "hover:text-gray-800"
                 }`}
               >
-                Request A Quote
-              </Link>
-            </div>
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Desktop Sign In */}
+          <div className="hidden lg:flex items-center gap-4">
+            <button className="bg-black border border-yellow-400 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+              Sign In
+            </button>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden ml-auto flex items-center">
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-4">
+            <button className="bg-black border border-yellow-400 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+              Sign In
+            </button>
             <button
               type="button"
-              className="text-blue-900 hover:text-orange-500 focus:outline-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-black hover:bg-yellow-400 rounded-lg transition-colors"
               aria-label="Toggle menu"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {mobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Navigation Overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white py-4 border-t border-gray-200">
-            <nav className="flex flex-col space-y-2">
-              <Link
-                href="/"
-                className={`px-3 py-2 text-sm transition-colors ${
-                  isActive("/") ? "text-blue-900 font-extrabold" : "text-blue-700 hover:text-blue-900 font-medium"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className={`px-3 py-2 text-sm transition-colors ${
-                  isActive("/about") ? "text-blue-900 font-extrabold" : "text-blue-700 hover:text-blue-900 font-medium"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Link
-                href="/services"
-                className={`px-3 py-2 text-sm transition-colors ${
-                  isActive("/services")
-                    ? "text-blue-900 font-extrabold"
-                    : "text-blue-700 hover:text-blue-900 font-medium"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Services
-              </Link>
-              <Link
-                href="/projects"
-                className={`px-3 py-2 text-sm transition-colors ${
-                  isActive("/projects")
-                    ? "text-blue-900 font-extrabold"
-                    : "text-blue-700 hover:text-blue-900 font-medium"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Projects
-              </Link>
-              <Link
-                href="/contact"
-                className={`px-3 py-2 text-sm transition-colors ${
-                  isActive("/contact")
-                    ? "text-blue-900 font-extrabold"
-                    : "text-blue-700 hover:text-blue-900 font-medium"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Contact
-              </Link>
-              <Link
-                href="/quote"
-                className={`mt-4 text-white px-6 py-2 text-center text-sm font-bold transition-colors ${
-                  isActive("/quote") ? "bg-blue-900 hover:bg-blue-800" : "bg-orange-500 hover:bg-orange-600"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Request A Quote
-              </Link>
-            </nav>
+          <div
+            className="lg:hidden fixed inset-0 top-16 bg-black/50 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className="bg-yellow-500 mx-4 mt-2 rounded-xl shadow-lg" onClick={(e) => e.stopPropagation()}>
+              <nav className="flex flex-col gap-1 p-4">
+                {navItems.map(({ id, label, path }) => (
+                  <a
+                    key={id}
+                    href={path}
+                    onClick={handleNavClick(path, id)}
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors relative ${
+                      activeSection === id
+                        ? "after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-black"
+                        : "hover:bg-yellow-400"
+                    }`}
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </div>
           </div>
         )}
-      </div>
-    </header>
+      </header>
+    </>
   )
 }

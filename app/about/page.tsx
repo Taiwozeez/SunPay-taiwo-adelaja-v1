@@ -1,9 +1,9 @@
 // import Header from '@/components/Header'
-import AboutCompanyHero from "../components/About/AboutCompanyHero"
-import AboutSection from '../components/Home/AboutSection'
-import AboutPetroleumSection from "../components/About/AboutCorevaultSection"
-import Team from "../components/About/Team"
-import Awards from "../components/About/Awards"
+import AboutCompanyHero from "../components/PaymentHistory/PolicyHero"
+import AboutSection from '../components/Home/AddMoney'
+import AboutPetroleumSection from "../components/PaymentHistory/PaymentTable"
+import Team from "../components/PaymentHistory/Team"
+import Awards from "../components/PaymentHistory/Awards"
 
 export default function About() {
   return (
