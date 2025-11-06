@@ -25,19 +25,26 @@ export default function FloatingChat() {
         </div>
       )}
 
-      {/* Chat Icon linking to Help page */}
+      {/* Chat Icon with stronger Radar Ping */}
       <Link href="/help" aria-label="Go to Help page">
-        <button className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 rounded-full p-3 shadow-lg transition-all duration-300">
-          {/* Chat bubble SVG icon */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" />
-          </svg>
-        </button>
+        <div className="relative flex items-center justify-center">
+          {/* First (larger) radar ping */}
+          <span className="absolute inline-flex h-16 w-16 rounded-full bg-yellow-400 opacity-40 animate-ping" />
+          {/* Second (smaller) radar ping */}
+          <span className="absolute inline-flex h-12 w-12 rounded-full bg-yellow-400 opacity-50 animate-ping animation-delay-200" />
+          
+          <button className="relative z-10 bg-yellow-400 hover:bg-yellow-300 text-gray-900 rounded-full p-3 shadow-lg transition-all duration-300">
+            {/* Chat bubble SVG icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" />
+            </svg>
+          </button>
+        </div>
       </Link>
     </div>
   )
