@@ -148,91 +148,6 @@ export default function MakePayment() {
         )}
       </div>
 
-      {/* Schedule Modal */}
-      {isScheduleModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white p-6 rounded-xl max-w-sm w-full">
-            <h3 className="text-lg font-bold mb-4">Schedule Payment</h3>
-
-            <div className="mb-3">
-              <label htmlFor="scheduleInterval" className="block text-gray-600 mb-1">
-                Select Interval
-              </label>
-              <select
-                id="scheduleInterval"
-                value={scheduleType}
-                onChange={(e) => setScheduleType(e.target.value as "days" | "weeks" | "years")}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-400"
-                aria-label="Select schedule interval"
-              >
-                <option value="days">Day(s)</option>
-                <option value="weeks">Week(s)</option>
-                <option value="years">Year(s)</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="scheduleCount" className="block text-gray-600 mb-1">
-                Set Count
-              </label>
-              <input
-                id="scheduleCount"
-                type="number"
-                value={scheduleCount}
-                min={1}
-                onChange={(e) => setScheduleCount(Number(e.target.value))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-400"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setIsScheduleModalOpen(false)}
-                className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleScheduleConfirm}
-                className="px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-black font-semibold transition"
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Success Modal */}
-      {isSuccessModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white p-6 rounded-xl max-w-sm w-full text-center">
-            <div className="flex items-center justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-bold mb-2">Scheduled Successfully</h3>
-            <p className="text-gray-700 mb-4">You can cancel anytime</p>
-            <button
-              type="button"
-              onClick={() => setIsSuccessModalOpen(false)}
-              className="px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-black font-semibold transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Payment Options */}
       <div className="mb-4">
         <p className="text-gray-600 font-semibold mb-2">Pay With</p>
@@ -305,7 +220,6 @@ export default function MakePayment() {
         Continue
       </button>
 
-      {/* Report an Issue linking to /help */}
       <Link href="/help">
         <button type="button" className="w-full text-red-600 font-medium text-sm hover:underline">
           Report an Issue
@@ -316,6 +230,23 @@ export default function MakePayment() {
 
   return (
     <section id="make-payment" className="py-12 px-4 sm:px-6 md:px-8 lg:px-12 mt-10">
+      <style jsx>{`
+        @keyframes pulseRadar {
+          0% {
+            box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6);
+          }
+          70% {
+            box-shadow: 0 0 0 20px rgba(250, 204, 21, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+          }
+        }
+        .radar-animate {
+          animation: pulseRadar 2s infinite;
+        }
+      `}</style>
+
       <div
         className={`relative max-w-[1400px] mx-auto rounded-3xl overflow-hidden bg-cover bg-center flex items-center justify-center transition-all duration-500 ease-in-out ${
           paymentMethod === "card"
@@ -345,9 +276,9 @@ export default function MakePayment() {
               <button
                 type="button"
                 onClick={() => setIsDrawerOpen(true)}
-                className="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg transition hover:bg-yellow-500"
+                className="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg transition hover:bg-yellow-500 radar-animate"
               >
-                Make Payment
+                Pay On Device
               </button>
             )}
           </div>

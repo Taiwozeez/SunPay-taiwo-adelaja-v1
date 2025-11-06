@@ -1,6 +1,7 @@
 import Header from './components/header'
 import Footer from './components/footer'
 import FloatingChat from './components/FloatingChat'
+import NotificationSystem from './components/NotificationSystem'
 import './globals.css'
 import { Poppins } from 'next/font/google'
 
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" className={poppins.variable}>
       <body className="font-sans relative">
         <Header />
+        <NotificationSystem />
         {children}
         <Footer />
         <FloatingChat />

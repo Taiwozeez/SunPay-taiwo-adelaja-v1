@@ -6,8 +6,8 @@ import { usePathname, useRouter } from "next/navigation"
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("make-payment")
-  const [notifOpen, setNotifOpen] = useState(false)
   const [signInOpen, setSignInOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
 
@@ -57,12 +57,36 @@ export default function Header() {
     }
   }
 
+  const handleBellClick = () => {
+    // Stop the auto-pop notifications when bell is clicked
+    if (window.stopNotifications) {
+      window.stopNotifications()
+    }
+    setDropdownOpen(!dropdownOpen)
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (dropdownOpen && !target.closest('.notification-bell')) {
+        setDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [dropdownOpen])
+
+  // Notification Bell Component
   const NotificationBell = () => (
-    <div className="relative">
+    <div className="relative notification-bell">
       <button
         type="button"
         aria-label="Notifications"
-        onClick={() => setNotifOpen(!notifOpen)}
+        onClick={handleBellClick}
         className="relative focus:outline-none"
       >
         <svg
@@ -84,18 +108,22 @@ export default function Header() {
         </span>
       </button>
 
-      {notifOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <ul className="divide-y divide-gray-200">
-            {notifications.map((notif, idx) => (
-              <li
-                key={idx}
-                className="px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 cursor-pointer"
-              >
-                {notif}
-              </li>
-            ))}
-          </ul>
+      {/* Dropdown List - Now works on both desktop and mobile */}
+      {dropdownOpen && (
+        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-slideDown">
+          <div className="p-2">
+            <h3 className="text-sm font-semibold text-gray-900 px-2 py-1">Notifications</h3>
+            <ul className="divide-y divide-gray-200 max-h-60 overflow-y-auto">
+              {notifications.map((notif, idx) => (
+                <li
+                  key={idx}
+                  className="px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 cursor-pointer rounded-md"
+                >
+                  {notif}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>
@@ -105,9 +133,22 @@ export default function Header() {
     <>
       <style jsx global>{`
         html { scroll-behavior: smooth; }
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideDown {
+          animation: slideDown 0.3s ease forwards;
+        }
       `}</style>
 
-      <header className="bg-yellow-500 text-black sticky top-0 z-50">
+      <header className="bg-yellow-500 text-black sticky top-0 z-40">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <span className="text-lg font-bold">SunPay</span>
 
@@ -147,7 +188,10 @@ export default function Header() {
             >
               Sign In
             </button>
+            
+            {/* Mobile Notification Bell - Now with dropdown */}
             <NotificationBell />
+
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -167,6 +211,7 @@ export default function Header() {
           </div>
         </div>
 
+        {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 top-16 bg-black/50 z-40" onClick={() => setMobileMenuOpen(false)}>
             <div className="bg-yellow-500 mx-4 mt-2 rounded-xl shadow-lg" onClick={(e) => e.stopPropagation()}>
