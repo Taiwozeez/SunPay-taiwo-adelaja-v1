@@ -30,7 +30,6 @@ export default function PaymentTable() {
 
           {/* Calendar Filters */}
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 w-full sm:w-auto">
-            {/* From Date */}
             <div className="flex flex-col w-full sm:w-auto">
               <label htmlFor="fromDate" className="text-sm font-medium text-gray-700 mb-1">
                 From
@@ -46,7 +45,6 @@ export default function PaymentTable() {
               />
             </div>
 
-            {/* To Date */}
             <div className="flex flex-col w-full sm:w-auto">
               <label htmlFor="toDate" className="text-sm font-medium text-gray-700 mb-1">
                 To
@@ -64,14 +62,12 @@ export default function PaymentTable() {
           </div>
         </div>
 
-        {/* Table Container with Side Scroll */}
+        {/* Table Container */}
         <div className="relative overflow-x-auto rounded-2xl shadow-lg border border-yellow-200 bg-white scrollbar-thin scrollbar-thumb-yellow-400 scrollbar-track-gray-100">
-          {/* Scroll hint for mobile */}
           <div className="absolute bottom-2 right-4 text-xs text-gray-400 md:hidden animate-pulse">
             ← Scroll →
           </div>
 
-          {/* Table */}
           <table className="w-full min-w-[1000px] text-left border-collapse">
             <thead className="bg-yellow-400 text-white">
               <tr>
@@ -102,7 +98,7 @@ export default function PaymentTable() {
                     {payment.amount}
                   </td>
                   <td className="py-3 sm:py-4 px-4 sm:px-6 font-mono text-gray-700 text-sm sm:text-base whitespace-nowrap">
-                    {payment.keycode}
+                    {payment.status === "Successful" ? payment.keycode : "N/A"}
                   </td>
                   <td className="py-3 sm:py-4 px-4 sm:px-6 whitespace-nowrap">
                     {payment.status === "Successful" ? (
