@@ -13,17 +13,23 @@ export default function HowItWorks() {
               className="w-full h-auto object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <button className="bg-white rounded-full p-5 shadow-lg hover:scale-105 transition-transform">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 text-green-500"
-                  viewBox="0 0 64 64"
-                  fill="currentColor"
-                >
-                  <circle cx="32" cy="32" r="32" fill="white" opacity="0.3" />
-                  <polygon points="26,20 26,44 46,32" fill="green" />
-                </svg>
-              </button>
+              <div className="relative flex items-center justify-center">
+                {/* Radar Ping */}
+                <span className="absolute inline-flex h-20 w-20 rounded-full bg-green-400 opacity-40 animate-ping" />
+                <span className="absolute inline-flex h-16 w-16 rounded-full bg-green-400 opacity-50 animate-ping animation-delay-200" />
+                
+                <button className="relative z-10 bg-white rounded-full p-5 shadow-lg hover:scale-105 transition-transform">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-10 w-10 text-green-500"
+                    viewBox="0 0 64 64"
+                    fill="currentColor"
+                  >
+                    <circle cx="32" cy="32" r="32" fill="white" opacity="0.3" />
+                    <polygon points="26,20 26,44 46,32" fill="green" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
