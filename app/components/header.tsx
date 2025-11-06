@@ -7,6 +7,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("make-payment")
   const [notifOpen, setNotifOpen] = useState(false)
+  const [signInOpen, setSignInOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
 
@@ -33,16 +34,13 @@ export default function Header() {
           const el = document.getElementById(id)
           if (el) {
             const rect = el.getBoundingClientRect()
-            if (rect.top <= 120 && rect.bottom >= 120) {
-              setActiveSection(id)
-            }
+            if (rect.top <= 120 && rect.bottom >= 120) setActiveSection(id)
           }
         } else if (pathname === path) {
           setActiveSection(id)
         }
       })
     }
-
     handleScroll()
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
@@ -51,7 +49,6 @@ export default function Header() {
   const handleNavClick = (path: string, id?: string) => (e: React.MouseEvent) => {
     e.preventDefault()
     setMobileMenuOpen(false)
-
     if (path.startsWith("/#") && pathname === "/") {
       const el = document.getElementById(id!)
       if (el) el.scrollIntoView({ behavior: "smooth" })
@@ -107,17 +104,13 @@ export default function Header() {
   return (
     <>
       <style jsx global>{`
-        html {
-          scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       <header className="bg-yellow-500 text-black sticky top-0 z-50">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          {/* Logo */}
           <span className="text-lg font-bold">SunPay</span>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map(({ id, label, path }) => (
               <a
@@ -135,17 +128,23 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Desktop Sign In + Notifications */}
           <div className="hidden lg:flex items-center gap-4 relative">
-            <button className="bg-black border border-yellow-400 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+            <button
+              aria-label="Sign In"
+              onClick={() => setSignInOpen(true)}
+              className="bg-black border border-yellow-400 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
               Sign In
             </button>
             <NotificationBell />
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4">
-            <button className="bg-black border border-yellow-400 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+            <button
+              aria-label="Sign In"
+              onClick={() => setSignInOpen(true)}
+              className="bg-black border border-yellow-400 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
               Sign In
             </button>
             <NotificationBell />
@@ -168,12 +167,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation Overlay */}
         {mobileMenuOpen && (
-          <div
-            className="lg:hidden fixed inset-0 top-16 bg-black/50 z-40"
-            onClick={() => setMobileMenuOpen(false)}
-          >
+          <div className="lg:hidden fixed inset-0 top-16 bg-black/50 z-40" onClick={() => setMobileMenuOpen(false)}>
             <div className="bg-yellow-500 mx-4 mt-2 rounded-xl shadow-lg" onClick={(e) => e.stopPropagation()}>
               <nav className="flex flex-col gap-1 p-4">
                 {navItems.map(({ id, label, path }) => (
@@ -191,6 +186,55 @@ export default function Header() {
                   </a>
                 ))}
               </nav>
+            </div>
+          </div>
+        )}
+
+        {/* Sign In Modal */}
+        {signInOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-white rounded-xl w-full max-w-md p-6 relative shadow-lg">
+              <button
+                onClick={() => setSignInOpen(false)}
+                aria-label="Close modal"
+                className="absolute top-4 right-4 text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900 text-center">Sign In</h2>
+              <form className="space-y-4">
+                <div>
+                  <label htmlFor="username" className="block text-gray-700 font-semibold mb-1">
+                    Lamp Number / Phone Number
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    placeholder="Enter your lamp number or phone"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="block text-gray-700 font-semibold mb-1">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2.5 rounded-lg transition"
+                >
+                  Sign In
+                </button>
+              </form>
+              <p className="mt-4 text-sm text-gray-600 text-center">
+                Don&#39;t have an account? <a href="#" className="text-yellow-500 hover:underline">Register</a>
+              </p>
             </div>
           </div>
         )}
