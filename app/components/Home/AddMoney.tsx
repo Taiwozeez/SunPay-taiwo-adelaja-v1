@@ -4,11 +4,19 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
+interface VirtualAccount {
+  accountNumber: string;
+  bankName: string;
+  accountName: string;
+}
+
 export default function AddMoney() {
   const [amount, setAmount] = useState("")
   const [copied, setCopied] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [virtualAccount, setVirtualAccount] = useState<VirtualAccount | null>(null)
+  const [timeLeft, setTimeLeft] = useState<number | null>(null)
 
   const accountNumber = "123456789"
   const accountName = "SunPay NG"
@@ -32,10 +40,48 @@ export default function AddMoney() {
     return () => window.removeEventListener("openAddMoneyDrawer", openDrawer)
   }, [])
 
+  // Countdown timer effect
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setVirtualAccount(null)
+      setTimeLeft(null)
+      return
+    }
+
+    if (timeLeft && timeLeft > 0) {
+      const timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [timeLeft])
+
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(accountNumber)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if (virtualAccount) {
+      await navigator.clipboard.writeText(virtualAccount.accountNumber)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const generateVirtualAccount = () => {
+    // Generate a random 10-digit account number
+    const generatedAccountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString()
+    
+    const newVirtualAccount: VirtualAccount = {
+      accountNumber: generatedAccountNumber,
+      bankName: "Sunpay NG",
+      accountName: "Go Sunpay"
+    }
+    
+    setVirtualAccount(newVirtualAccount)
+    setTimeLeft(3600) // 60 minutes in seconds
+  }
+
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`
   }
 
   // AddMoneyCard JSX remains the same
@@ -46,7 +92,54 @@ export default function AddMoney() {
         <p className="text-gray-600 text-sm mb-1">Wallet Balance</p>
         <p className="text-3xl font-extrabold text-gray-900 mb-3">₦12,500.00</p>
       </div>
-      <div className="mb-8 text-center">
+      
+      {/* Virtual Account Section */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <p className="text-gray-600 font-semibold mb-3 text-center">Virtual Account</p>
+        
+        {virtualAccount ? (
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-xl font-bold tracking-wider text-gray-900">
+                {virtualAccount.accountNumber}
+              </span>
+              <button 
+                type="button" 
+                onClick={handleCopy} 
+                className="text-sm bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
+              >
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            </div>
+            <p className="text-sm text-gray-700 mb-1">
+              <span className="font-semibold">Bank:</span> {virtualAccount.bankName}
+            </p>
+            <p className="text-sm text-gray-700 mb-2">
+              <span className="font-semibold">Account Name:</span> {virtualAccount.accountName}
+            </p>
+            {timeLeft !== null && (
+              <p className="text-xs text-red-600 font-medium">
+                This account will expire in {formatTime(timeLeft)}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-3">
+              Generate a temporary virtual account to add money
+            </p>
+            <button 
+              type="button"
+              onClick={generateVirtualAccount}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+            >
+              Generate Virtual Account
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* <div className="mb-8 text-center">
         <p className="text-gray-600 font-semibold mb-2">SunPay Bank Account</p>
         <div className="flex items-center justify-center gap-2">
           <span className="text-2xl font-bold tracking-wider text-gray-900">{accountNumber}</span>
@@ -55,7 +148,7 @@ export default function AddMoney() {
           </button>
         </div>
         <p className="mt-2 text-lg text-gray-700 font-semibold">Account Name: {accountName}</p>
-      </div>
+      </div> */}
       {/* Card Payment Fields */}
       <div className="mb-4">
         <div className="flex items-center gap-3 mb-3 justify-center">

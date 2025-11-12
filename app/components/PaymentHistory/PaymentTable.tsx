@@ -7,16 +7,16 @@ export default function PaymentTable() {
   const [toDate, setToDate] = useState("")
 
   const payments = [
-    { date: "2025-11-01", amount: "₦2,000", keycode: "228-445-078-788-688", status: "Successful" },
-    { date: "2025-11-02", amount: "₦3,500", keycode: "445-567-123-456-890", status: "Failed" },
-    { date: "2025-11-03", amount: "₦1,200", keycode: "789-234-098-765-432", status: "Successful" },
-    { date: "2025-11-04", amount: "₦5,000", keycode: "234-987-345-678-901", status: "Successful" },
-    { date: "2025-11-05", amount: "₦1,800", keycode: "111-222-333-444-555", status: "Failed" },
-    { date: "2025-11-06", amount: "₦7,000", keycode: "666-777-888-999-000", status: "Successful" },
-    { date: "2025-11-07", amount: "₦2,750", keycode: "123-456-789-012-345", status: "Successful" },
-    { date: "2025-11-08", amount: "₦3,100", keycode: "321-654-987-210-543", status: "Failed" },
-    { date: "2025-11-09", amount: "₦4,600", keycode: "654-987-321-654-987", status: "Successful" },
-    { date: "2025-11-10", amount: "₦2,300", keycode: "567-890-123-456-789", status: "Successful" },
+    { date: "2025-11-01", amount: "₦2,000", keycode: "228-445-078-788-688", status: "Successful", ln: "458723619" },
+    { date: "2025-11-02", amount: "₦3,500", keycode: "445-567-123-456-890", status: "Failed", ln: "892156347" },
+    { date: "2025-11-03", amount: "₦1,200", keycode: "789-234-098-765-432", status: "Successful", ln: "634897125" },
+    { date: "2025-11-04", amount: "₦5,000", keycode: "234-987-345-678-901", status: "Successful", ln: "215478963" },
+    { date: "2025-11-05", amount: "₦1,800", keycode: "111-222-333-444-555", status: "Failed", ln: "789123456" },
+    { date: "2025-11-06", amount: "₦7,000", keycode: "666-777-888-999-000", status: "Successful", ln: "346912578" },
+    { date: "2025-11-07", amount: "₦2,750", keycode: "123-456-789-012-345", status: "Successful", ln: "567891234" },
+    { date: "2025-11-08", amount: "₦3,100", keycode: "321-654-987-210-543", status: "Failed", ln: "912345678" },
+    { date: "2025-11-09", amount: "₦4,600", keycode: "654-987-321-654-987", status: "Successful", ln: "478563219" },
+    { date: "2025-11-10", amount: "₦2,300", keycode: "567-890-123-456-789", status: "Successful", ln: "123654987" },
   ]
 
   return (
@@ -95,7 +95,10 @@ export default function PaymentTable() {
                     {payment.date}
                   </td>
                   <td className="py-3 sm:py-4 px-4 sm:px-6 font-medium text-gray-900 text-sm sm:text-base whitespace-nowrap">
-                    {payment.amount}
+                    <div className="flex flex-col">
+                      <span>{payment.amount}</span>
+                      <span className="text-xs text-gray-500 font-mono mt-1">LN: {payment.ln}</span>
+                    </div>
                   </td>
                   <td className="py-3 sm:py-4 px-4 sm:px-6 font-mono text-gray-700 text-sm sm:text-base whitespace-nowrap">
                     {payment.status === "Successful" ? payment.keycode : "N/A"}
