@@ -46,7 +46,7 @@ const DayBox: React.FC<DayBoxProps> = ({ days, label, isActive, isFirstBox = fal
   );
 };
 
-const PayEarlySaveMore: React.FC = () => {
+const Details: React.FC = () => {
   const [activeBox, setActiveBox] = useState<number>(0);
   const [progress, setProgress] = useState<number>(5.9);
   
@@ -75,11 +75,11 @@ const PayEarlySaveMore: React.FC = () => {
   ];
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-yellow-50 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-white flex items-center justify-center p-8">
       <div className="flex flex-col lg:flex-row gap-12 max-w-6xl w-full items-center">
         {/* Left Side - Payment Details */}
         <div className="lg:w-2/5 w-full">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-yellow-400 p-8">
+          <div className="bg-white rounded-2xl border-2 border-yellow-400 p-8">
             <div className="mb-6 pb-4 border-b border-amber-200">
               <h2 className="text-2xl font-bold text-black">
                 Payment Dashboard
@@ -137,7 +137,7 @@ const PayEarlySaveMore: React.FC = () => {
             </h1>
           </div>
           
-          <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-yellow-400 p-8 w-full max-w-lg">
+          <div className="relative bg-white rounded-2xl border-2 border-yellow-400 p-8 w-full max-w-lg">
             <div className="flex flex-col">
               {dayData.map((item, index) => (
                 <DayBox 
@@ -169,4 +169,4 @@ const PayEarlySaveMore: React.FC = () => {
   );
 };
 
-export default PayEarlySaveMore;
+export default Details;
