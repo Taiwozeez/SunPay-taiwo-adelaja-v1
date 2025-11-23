@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
+import { motion } from "framer-motion"
 
 type ScheduleType = "days" | "weeks" | "months" | "years"
 
@@ -91,13 +93,23 @@ export default function MakePayment() {
     setScheduleType(interval)
   }
 
+  // Handle Add Money button click in mobile
+  const handleAddMoneyClick = () => {
+    if (isMobile) {
+      // Open the add money drawer (assuming this is handled elsewhere)
+      window.dispatchEvent(new CustomEvent("openAddMoneyDrawer"))
+      // Keep the current payment drawer open so it overlays on top
+    } else {
+      const section = document.getElementById("add-money")
+      section?.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   // ==========================
   // 💳 Payment Card Component
   // ==========================
   const PaymentCard = (
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md text-gray-800 transition-all duration-500 ease-in-out">
-      <h2 className="text-xl font-bold mb-3 text-center">Make Payment</h2>
-
+    <div className="bg-white rounded-2xl p-6 w-full max-w-md text-gray-800 transition-all duration-500 ease-in-out">
       {/* Active Schedule Indicator */}
       {scheduledActive && (
         <div className="mb-4 flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3">
@@ -125,14 +137,7 @@ export default function MakePayment() {
         <p className="text-3xl font-extrabold text-gray-900 mb-3">₦14,003.98</p>
         <button
           type="button"
-          onClick={() => {
-            if (isMobile) {
-              window.dispatchEvent(new CustomEvent("openAddMoneyDrawer"))
-            } else {
-              const section = document.getElementById("add-money")
-              section?.scrollIntoView({ behavior: "smooth" })
-            }
-          }}
+          onClick={handleAddMoneyClick}
           className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-5 py-2 rounded-md transition text-sm"
         >
           Add Money
@@ -406,23 +411,6 @@ export default function MakePayment() {
       id="make-payment"
       className="py-12 px-4 sm:px-6 md:px-8 lg:px-12 mt-10"
     >
-      <style jsx>{`
-        @keyframes pulseRadar {
-          0% {
-            box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6);
-          }
-          70% {
-            box-shadow: 0 0 0 20px rgba(250, 204, 21, 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
-          }
-        }
-        .radar-animate {
-          animation: pulseRadar 2s infinite;
-        }
-      `}</style>
-
       <div
         className={`relative max-w-[1400px] mx-auto rounded-3xl overflow-hidden bg-cover bg-center flex items-center justify-center transition-all duration-500 ease-in-out ${
           paymentMethod === "card"
@@ -450,41 +438,80 @@ export default function MakePayment() {
                 ▶ See How it Works
               </button>
             ) : (
-              <button
+              <motion.button
                 type="button"
                 onClick={() => setIsDrawerOpen(true)}
-                className="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg transition hover:bg-yellow-500 radar-animate"
+                className="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg transition hover:bg-yellow-500 relative"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Pay On Device
-              </button>
+                
+                {/* Radiation effect */}
+                <motion.div
+                  className="absolute inset-0 border-2 border-yellow-400 rounded-lg"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.7, 0, 0.7],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                  }}
+                />
+                <motion.div
+                  className="absolute inset-0 border-2 border-yellow-300 rounded-lg"
+                  animate={{
+                    scale: [1, 1.4, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: 0.5,
+                  }}
+                />
+                <motion.div
+                  className="absolute inset-0 border-2 border-yellow-200 rounded-lg"
+                  animate={{
+                    scale: [1, 1.6, 1],
+                    opacity: [0.3, 0, 0.3],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: 1,
+                  }}
+                />
+              </motion.button>
             )}
           </div>
 
           {!isMobile && PaymentCard}
         </div>
 
-        {/* Drawer for mobile */}
+        {/* Shadcn Drawer for mobile */}
         {isMobile && (
-          <div
-            className={`fixed inset-0 z-50 bg-black/60 flex items-end justify-center md:hidden transition-all duration-700 ease-out ${
-              isDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            <div
-              className={`bg-white rounded-t-3xl w-full max-w-md p-6 shadow-lg transform transition-transform duration-700 ease-out h-[80vh] overflow-y-auto relative ${
-                isDrawerOpen ? "translate-y-0" : "translate-y-full"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => setIsDrawerOpen(false)}
-                className="absolute top-4 right-4 text-gray-700 text-2xl font-bold"
-              >
-                ×
-              </button>
-              {PaymentCard}
-            </div>
-          </div>
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerContent className="max-h-[90vh] overflow-hidden">
+              <div className="overflow-y-auto max-h-full">
+                <DrawerHeader className="text-left relative pr-12 pb-0">
+                  <button
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 transition-colors text-2xl font-bold text-gray-700"
+                  >
+                    ×
+                  </button>
+                </DrawerHeader>
+                <div className="p-6 pb-8 -mt-4">
+                  {PaymentCard}
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
         )}
       </div>
     </section>

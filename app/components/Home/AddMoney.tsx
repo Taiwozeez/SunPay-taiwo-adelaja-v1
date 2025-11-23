@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 
 interface VirtualAccount {
   accountNumber: string;
@@ -86,7 +87,7 @@ export default function AddMoney() {
 
   // AddMoneyCard JSX remains the same
   const AddMoneyCard = (
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md text-gray-800 transition-all duration-500 ease-in-out">
+    <div className="bg-white rounded-2xl p-6 w-full max-w-md text-gray-800 transition-all duration-500 ease-in-out">
       <h2 className="text-xl font-bold mb-3 text-center">Add Money</h2>
       <div className="mb-6 text-center">
         <p className="text-gray-600 text-sm mb-1">Wallet Balance</p>
@@ -139,16 +140,6 @@ export default function AddMoney() {
         )}
       </div>
 
-      {/* <div className="mb-8 text-center">
-        <p className="text-gray-600 font-semibold mb-2">SunPay Bank Account</p>
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-2xl font-bold tracking-wider text-gray-900">{accountNumber}</span>
-          <button type="button" onClick={handleCopy} className="text-sm text-yellow-500 hover:text-yellow-600 transition">
-            {copied ? "Copied!" : "Copy"}
-          </button>
-        </div>
-        <p className="mt-2 text-lg text-gray-700 font-semibold">Account Name: {accountName}</p>
-      </div> */}
       {/* Card Payment Fields */}
       <div className="mb-4">
         <div className="flex items-center gap-3 mb-3 justify-center">
@@ -235,28 +226,25 @@ export default function AddMoney() {
           {!isMobile && AddMoneyCard}
         </div>
 
-        {/* Mobile Drawer */}
+        {/* Shadcn Drawer for mobile */}
         {isMobile && (
-          <div
-            className={`fixed inset-0 z-50 bg-black/60 flex items-end justify-center md:hidden transition-all duration-700 ease-out ${
-              isDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-          >
-            <div
-              className={`bg-white rounded-t-3xl w-full max-w-md p-6 shadow-lg transform transition-transform duration-700 ease-out h-[80vh] overflow-y-auto relative ${
-                isDrawerOpen ? "translate-y-0" : "translate-y-full"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => setIsDrawerOpen(false)}
-                className="absolute top-4 right-4 text-gray-700 text-2xl font-bold"
-              >
-                ×
-              </button>
-              {AddMoneyCard}
-            </div>
-          </div>
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerContent className="max-h-[90vh] overflow-hidden">
+              <div className="overflow-y-auto max-h-full">
+                <DrawerHeader className="text-left relative pr-12 pb-0">
+                  <button
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="absolute right-4 top-4 p-1 rounded-full hover:bg-gray-100 transition-colors text-2xl font-bold text-gray-700"
+                  >
+                    ×
+                  </button>
+                </DrawerHeader>
+                <div className="p-6 pb-8 -mt-4">
+                  {AddMoneyCard}
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
         )}
       </div>
     </section>
