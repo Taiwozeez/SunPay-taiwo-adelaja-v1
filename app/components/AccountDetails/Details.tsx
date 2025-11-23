@@ -172,8 +172,8 @@ const DayBox: React.FC<DayBoxProps> = ({
 
 const Details: React.FC = () => {
   const [activeBox, setActiveBox] = useState<number>(0);
-  const [progress] = useState<number>(5.9); // Removed unused setProgress
-  const [, setIsVisible] = useState<boolean>(false); // Removed unused isVisible
+  const [progress] = useState<number>(5.9);
+  const [, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -205,7 +205,7 @@ const Details: React.FC = () => {
     { label: "Outstanding Balance", value: "144,000 NGN" },
   ];
 
-  // Animation variants with proper typing
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -236,7 +236,7 @@ const Details: React.FC = () => {
       width: `${progress}%`,
       transition: {
         duration: 1.5,
-        ease: "easeOut"
+        ease: "easeOut" as const
       }
     }
   };
