@@ -17,33 +17,33 @@ export default function FloatingChat() {
   }, [])
 
   // Animation variants
-  const messageVariants = {
-    hidden: {
-      opacity: 0,
-      x: 50,
-      scale: 0.8,
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20,
-        duration: 0.5
-      }
-    },
-    exit: {
-      opacity: 0,
-      x: 50,
-      scale: 0.8,
-      transition: {
-        duration: 0.3,
-        ease: "easeIn"
-      }
+const messageVariants = {
+  hidden: {
+    opacity: 0,
+    x: 50,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 20,
+      duration: 0.5
+    }
+  },
+  exit: {
+    opacity: 0,
+    x: 50,
+    scale: 0.8,
+    transition: {
+      duration: 0.3,
+      ease: "easeIn" as const
     }
   }
+};
 
   const chatButtonVariants = {
     rest: {
