@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const router = useRouter()
 
   const slides = [
@@ -23,107 +24,76 @@ export default function HeroSection() {
     },
   ]
 
-  const next = useCallback(() => setCurrentSlide((prev) => (prev + 1) % slides.length), [slides.length])
-  const prev = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+  const next = useCallback(() => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => (prev + 1) % slides.length)
+    setTimeout(() => setIsTransitioning(false), 1200)
+  }, [slides.length, isTransitioning])
+
+  const prev = () => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+    setTimeout(() => setIsTransitioning(false), 1200)
+  }
+
+  const goToSlide = (index: number) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setCurrentSlide(index)
+    setTimeout(() => setIsTransitioning(false), 1200)
+  }
 
   useEffect(() => {
     const timer = setInterval(next, 6000)
     return () => clearInterval(timer)
-  }, [next]) // Added 'next' to dependencies
+  }, [next])
 
   const slide = slides[currentSlide]
 
-  // Background image variants
-  const backgroundVariants = {
-    enter: (direction: number) => ({
-      opacity: 0,
-      scale: 1.1,
-      x: direction > 0 ? 100 : -100,
-    }),
-    center: {
-      opacity: 1,
-      scale: 1,
-      x: 0,
-      transition: {
-        opacity: { duration: 1.2, ease: "easeOut" as const },
-        scale: { duration: 1.5, ease: "easeOut" as const },
-        x: { duration: 1.2, ease: "easeOut" as const }
-      }
-    },
-    exit: (direction: number) => ({
-      opacity: 0,
-      scale: 0.9,
-      x: direction > 0 ? -100 : 100,
-      transition: {
-        opacity: { duration: 0.8, ease: "easeIn" as const },
-        scale: { duration: 1, ease: "easeIn" as const },
-        x: { duration: 0.8, ease: "easeIn" as const }
-      }
-    })
-  }
-
-  // Content variants
+  // FIXED: TypeScript compatible variants
   const contentVariants = {
     enter: {
       opacity: 0,
-      y: 50,
+      y: 40,
     },
     center: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut" as const,
-        delay: 0.3
-      }
     },
     exit: {
       opacity: 0,
-      y: -50,
-      transition: {
-        duration: 0.5,
-        ease: "easeIn" as const
-      }
-    }
-  }
-
-  // Scroll to How It Works section
-  const scrollToHowItWorks = () => {
-    const el = document.getElementById("how-it-works")
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  // Navigate to sign-up page
-  const handleSignUp = () => {
-    router.push("/sign-up")
+      y: -40,
+    },
   }
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center text-white overflow-hidden">
-      {/* Background Carousel Images with Framer Motion */}
-      <div className="absolute inset-0">
-        <AnimatePresence mode="popLayout" custom={currentSlide}>
-          <motion.div
-            key={currentSlide}
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url(${slide.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-            variants={backgroundVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            custom={currentSlide}
-          />
-        </AnimatePresence>
-        <div className="absolute inset-0 bg-black/50" />
+
+      {/* CONTINUOUS LEFT SLIDING BACKGROUND */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="relative w-full h-full">
+          {slides.map((item, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
+              style={{
+                backgroundImage: `url(${item.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      {/* Content with Animation */}
+      {/* TEXT CONTENT */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <AnimatePresence mode="wait">
           <motion.div
@@ -132,119 +102,86 @@ export default function HeroSection() {
             initial="enter"
             animate="center"
             exit="exit"
+            transition={{
+              duration: 0.7,
+              ease: "easeOut"
+            }}
           >
-            <motion.h1 
-              className="text-5xl md:text-6xl font-bold mb-6 text-white text-balance"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
               {slide.title}
-            </motion.h1>
-            <motion.p 
-              className="text-lg md:text-xl mb-4 text-white/90 leading-relaxed text-balance"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            >
-              {slide.description}
-            </motion.p>
-            <motion.p 
-              className="text-base md:text-lg text-white/80 mb-10 text-balance"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
-            >
-              {slide.details}
-            </motion.p>
+            </h1>
 
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.1 }}
-            >
-              <motion.button 
-                onClick={handleSignUp}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold transition-colors"
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 10px 25px -5px rgba(255, 193, 7, 0.4)"
-                }}
+            <p className="text-lg md:text-xl mb-4 text-white/90">
+              {slide.description}
+            </p>
+
+            <p className="text-base md:text-lg text-white/80 mb-10">
+              {slide.details}
+            </p>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <motion.button
+                onClick={() => router.push("/sign-up")}
+                className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 Sign Up Now
               </motion.button>
+
               <motion.button
-                onClick={scrollToHowItWorks}
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors flex items-center gap-2"
-                whileHover={{ 
-                  scale: 1.05,
-                  backgroundColor: "rgba(255, 255, 255, 0.1)"
+                onClick={() => {
+                  const el = document.getElementById("how-it-works")
+                  if (el) el.scrollIntoView({ behavior: "smooth" })
                 }}
+                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" as const }}
-                >
-                  ▶
-                </motion.span>
-                See How it Works
+                ▶ See How it Works
               </motion.button>
-            </motion.div>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Left Arrow (hidden on mobile) */}
+      {/* PREV ARROW */}
       <motion.button
         onClick={prev}
-        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white/80 rounded-full w-12 h-12 flex items-center justify-center hover:bg-white transition-colors"
-        aria-label="Previous slide"
-        whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 1)" }}
+        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white/80 rounded-full w-12 h-12 items-center justify-center hover:bg-white"
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
+        disabled={isTransitioning}
       >
-        <motion.span 
-          className="text-black text-2xl leading-none"
-          whileHover={{ x: -2 }}
-        >
-          ‹
-        </motion.span>
+        <span className="text-black text-2xl">‹</span>
       </motion.button>
 
-      {/* Right Arrow (hidden on mobile) */}
+      {/* NEXT ARROW */}
       <motion.button
         onClick={next}
-        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-white/80 rounded-full w-12 h-12 flex items-center justify-center hover:bg-white transition-colors"
-        aria-label="Next slide"
-        whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 1)" }}
+        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-white/80 rounded-full w-12 h-12 items-center justify-center hover:bg-white"
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
+        disabled={isTransitioning}
       >
-        <motion.span 
-          className="text-black text-2xl leading-none"
-          whileHover={{ x: 2 }}
-        >
-          ›
-        </motion.span>
+        <span className="text-black text-2xl">›</span>
       </motion.button>
 
-      {/* Pagination Dots */}
+      {/* DOTS */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <motion.button
             key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-2 rounded-full transition-all ${
+            onClick={() => goToSlide(index)}
+            className={`h-2 rounded-full transition-colors ${
               index === currentSlide ? "bg-white" : "bg-white/50"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-            whileHover={{ scale: 1.3 }}
-            whileTap={{ scale: 0.8 }}
+            } ${isTransitioning ? "cursor-not-allowed" : "cursor-pointer"}`}
             animate={{
               width: index === currentSlide ? 32 : 8,
             }}
-            transition={{ type: "spring" as const, stiffness: 400, damping: 17 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            disabled={isTransitioning}
           />
         ))}
       </div>
