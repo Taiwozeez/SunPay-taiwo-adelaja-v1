@@ -4,7 +4,6 @@ import type React from "react"
 import { useState } from "react"
 import { Sidebar } from "../components/sidebar"
 import { Header } from "../components/header"
-import { cn } from "@/lib/utils"
 
 interface DashboardLayoutProps {
   children: React.ReactNode

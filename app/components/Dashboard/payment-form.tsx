@@ -542,7 +542,7 @@ export function PaymentForm() {
                               <motion.div
                                 initial={{ scale: 0.95 }}
                                 animate={{ scale: 1 }}
-                                className="text-sm sm:text-base font-bold text-gray-900 bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent"
+                                className="text-sm sm:text-base font-bold bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent"
                               >
                                 Sunpay
                               </motion.div>
