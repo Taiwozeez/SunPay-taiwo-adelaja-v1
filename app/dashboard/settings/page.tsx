@@ -22,13 +22,14 @@ export default function SettingsPage() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 min-h-full">
-      <div className="max-w-4xl mx-auto">
+      {/* Removed max-width constraint on mobile, added it back on sm breakpoint */}
+      <div className="mx-auto w-full sm:max-w-4xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h1 className="text-2xl font-bold text-gray-800">Personal Information</h1>
           <button
             onClick={handleReset}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors self-start sm:self-auto"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors self-start sm:self-auto text-sm sm:text-base"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -42,17 +43,17 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        {/* Main Card */}
+        {/* Main Card - Wider on mobile */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          {/* Tabs */}
+          {/* Tabs - Adjusted for mobile */}
           <div className="flex border-b border-gray-100">
             <button
               onClick={() => setActiveTab("details")}
-              className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors relative ${
+              className={`flex-1 sm:flex-none flex items-center justify-center sm:justify-start gap-2 px-4 sm:px-6 py-4 font-medium transition-colors relative ${
                 activeTab === "details" ? "text-amber-600" : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Personal Details
+              <span className="text-sm sm:text-base">Personal Details</span>
               {activeTab === "details" && (
                 <span className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,11 +65,11 @@ export default function SettingsPage() {
             </button>
             <button
               onClick={() => setActiveTab("edit")}
-              className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors relative ${
+              className={`flex-1 sm:flex-none flex items-center justify-center sm:justify-start gap-2 px-4 sm:px-6 py-4 font-medium transition-colors relative ${
                 activeTab === "edit" ? "text-amber-600" : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Edit Info
+              <span className="text-sm sm:text-base">Edit Info</span>
               {activeTab === "edit" && (
                 <span className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,8 +86,8 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          {/* Content */}
-          <div className="p-6 sm:p-8">
+          {/* Content - Adjusted padding for mobile */}
+          <div className="p-4 sm:p-6 lg:p-8">
             {activeTab === "details" ? (
               <PersonalDetails profileImage={profileImage} />
             ) : (
