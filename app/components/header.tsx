@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image" // Import Image from next/image
 
 interface HeaderProps {
   onMenuClick: () => void
@@ -120,7 +121,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             `}
             aria-label={isSearchOpen ? "Close search" : "Open search"}
             title={isSearchOpen ? "Close search" : "Open search"}
-            aria-expanded={isSearchOpen}
+            aria-expanded={isSearchOpen ? "true" : "false"} // FIXED: Must be string "true" or "false"
           >
             <svg 
               className="w-7 h-7" 
@@ -169,17 +170,20 @@ export function Header({ onMenuClick }: HeaderProps) {
           <span className="sr-only">Notifications (new notifications available)</span>
         </button>
 
-        {/* User avatar */}
+        {/* User avatar - FIXED: Using Next.js Image component */}
         <button
           type="button"
           className="h-14 w-14 rounded-full overflow-hidden bg-gray-200 border-3 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="User profile"
           title="User profile"
         >
-          <img 
+          <Image 
             src="/diverse-user-avatars.png" 
             alt="User avatar" 
+            width={56} // 14 * 4 = 56 (h-14 = 3.5rem = 56px)
+            height={56}
             className="object-cover w-full h-full" 
+            priority={false} // Set to true if this is above the fold
           />
         </button>
       </div>
