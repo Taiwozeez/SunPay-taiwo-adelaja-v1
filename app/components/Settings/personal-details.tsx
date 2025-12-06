@@ -39,7 +39,8 @@ export function PersonalDetails({ profileImage }: PersonalDetailsProps) {
 
       {/* User Information List */}
       <div className="flex-1">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Account Information</h3>
+        {/* Updated heading with mobile-specific text size */}
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Account Information</h3>
         <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-100 overflow-hidden">
           {userInfo.map((item, index) => (
             <div
@@ -62,7 +63,7 @@ export function PersonalDetails({ profileImage }: PersonalDetailsProps) {
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-green-800 truncate">Account Active</p>
+            <p className="text-xs sm:text-sm font-semibold text-green-800 truncate">Account Active</p>
             <p className="text-xs text-green-600 truncate">Your device is registered and active</p>
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 
 interface EditInfoProps {
@@ -14,7 +14,19 @@ interface EditInfoProps {
 export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: EditInfoProps) {
   const [email, setEmail] = useState("taiwo.adelaja@email.com")
   const [isSaving, setIsSaving] = useState(false)
+  const [isEmailValid, setIsEmailValid] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Email validation function
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Validate email on change
+  useEffect(() => {
+    setIsEmailValid(validateEmail(email))
+  }, [email])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -28,6 +40,8 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
   }
 
   const handleSave = async () => {
+    if (!isEmailValid) return
+    
     setIsSaving(true)
     // Simulate save
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -98,13 +112,14 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
 
       {/* Edit Form */}
       <div className="flex-1">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Basic Information</h3>
+        {/* Updated heading with mobile-specific text size */}
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 sm:mb-6">Basic Information</h3>
 
         <div className="space-y-4 sm:space-y-5">
           {/* Customer Name - Not Editable */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label htmlFor="first-name" className="block text-sm font-medium text-gray-600 mb-2">
+              <label htmlFor="first-name" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
                 First Name
               </label>
               <div className="relative">
@@ -135,7 +150,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
               </div>
             </div>
             <div>
-              <label htmlFor="last-name" className="block text-sm font-medium text-gray-600 mb-2">
+              <label htmlFor="last-name" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
                 Last Name
               </label>
               <div className="relative">
@@ -170,9 +185,9 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
             Name cannot be changed. Contact support for assistance.
           </p>
 
-          {/* Email - Editable */}
+          {/* Email - Editable with validation */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">
+            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
               Email Address
             </label>
             <div className="relative">
@@ -184,25 +199,40 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
                 aria-describedby="email-help-text"
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base rounded-lg border border-amber-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <svg 
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
+              {/* Round check mark - only shows when email is valid */}
+              {isEmailValid && email.length > 0 && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg 
+                      className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                      strokeWidth="3"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
-            <p id="email-help-text" className="sr-only">You can edit this field</p>
+            {!isEmailValid && email.length > 0 && (
+              <p id="email-help-text" className="text-xs text-red-500 mt-1">
+                Please enter a valid email address
+              </p>
+            )}
+            {isEmailValid && email.length > 0 && (
+              <p id="email-help-text" className="text-xs text-green-600 mt-1 sr-only sm:not-sr-only">
+                Email is valid
+              </p>
+            )}
           </div>
 
           {/* Lamp No - Not Editable */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label htmlFor="lamp-number" className="block text-sm font-medium text-gray-600 mb-2">
+              <label htmlFor="lamp-number" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
                 Lamp No.
               </label>
               <input
@@ -215,7 +245,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
               />
             </div>
             <div>
-              <label htmlFor="product-name" className="block text-sm font-medium text-gray-600 mb-2">
+              <label htmlFor="product-name" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
                 Product Name
               </label>
               <input
@@ -231,7 +261,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
 
           {/* Registration Date - Not Editable */}
           <div>
-            <label htmlFor="registration-date" className="block text-sm font-medium text-gray-600 mb-2">
+            <label htmlFor="registration-date" className="block text-xs sm:text-sm font-medium text-gray-600 mb-2">
               Device Registration Date
             </label>
             <input
@@ -279,11 +309,11 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              <span className="whitespace-nowrap">Cancel</span>
+              <span className="whitespace-nowrap text-xs sm:text-base">Cancel</span>
             </button>
             <button
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || !isEmailValid}
               className="flex-1 sm:flex-none px-4 sm:px-5 py-2 sm:py-2.5 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 text-sm sm:text-base"
               type="button"
               aria-label={isSaving ? "Saving changes..." : "Save changes"}
@@ -302,7 +332,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
                   d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
                 />
               </svg>
-              <span className="whitespace-nowrap">{isSaving ? "Saving..." : "Save Changes"}</span>
+              <span className="whitespace-nowrap text-xs sm:text-base">{isSaving ? "Saving..." : "Save Changes"}</span>
             </button>
           </div>
         </div>
