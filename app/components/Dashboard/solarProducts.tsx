@@ -97,8 +97,8 @@ export function SolarProductStatus() {
         }
       })
     } else {
-      // Weekly data
-      return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => ({
+      // Weekly data - FIXED: removed unused 'i' parameter
+      return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
         day,
         value: (product.dailyConsumption || product.dailyGeneration || 0) * (0.8 + Math.random() * 0.4),
         secondaryValue: product.dailyGeneration ? 
