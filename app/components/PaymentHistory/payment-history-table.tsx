@@ -181,7 +181,7 @@ export function PaymentHistoryTable() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 rounded-2xl p-4 md:p-6 relative overflow-hidden w-full max-w-[95vw] mx-auto">
+    <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 rounded-2xl p-4 sm:p-5 md:p-6 relative overflow-hidden w-full max-w-none mx-0">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-30"
@@ -194,29 +194,29 @@ export function PaymentHistoryTable() {
       <div className="relative z-10">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Payment History</h2>
-            <p className="text-sm text-gray-500">View and manage your payment records</p>
+          <div className="w-full">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Payment History</h2>
+            <p className="text-sm sm:text-base text-gray-500">View and manage your payment records</p>
           </div>
 
           <button
             onClick={handleDownloadStatement}
-            className="flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-xl transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-5 rounded-xl transition-colors w-full sm:w-auto"
             title="Download payment statement as CSV"
             aria-label="Download payment statement"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>
-            <span className="whitespace-nowrap">Download Statement</span>
+            <span className="whitespace-nowrap text-sm sm:text-base">Download Statement</span>
           </button>
         </div>
 
         {/* Date Filters */}
-        <div className="bg-white rounded-xl p-4 mb-6 shadow-sm w-full">
+        <div className="bg-white rounded-xl p-4 sm:p-5 mb-6 shadow-sm w-full">
           <div className="flex flex-col sm:flex-row gap-4 items-end w-full">
-            <div className="flex-1 min-w-0 w-full">
-              <label htmlFor="from-date" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="flex-1 w-full">
+              <label htmlFor="from-date" className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                 From Date
               </label>
               <input
@@ -224,13 +224,13 @@ export function PaymentHistoryTable() {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 title="Select start date for filtering"
                 aria-label="Filter transactions from date"
               />
             </div>
-            <div className="flex-1 min-w-0 w-full">
-              <label htmlFor="to-date" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="flex-1 w-full">
+              <label htmlFor="to-date" className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                 To Date
               </label>
               <input
@@ -238,15 +238,15 @@ export function PaymentHistoryTable() {
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 title="Select end date for filtering"
                 aria-label="Filter transactions to date"
               />
             </div>
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="flex gap-3 w-full sm:w-auto mt-2 sm:mt-0">
               <button
                 onClick={handleApplyFilter}
-                className="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 sm:px-6 rounded-xl transition-colors"
+                className="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-colors text-sm sm:text-base"
                 title="Apply date filter"
                 aria-label="Apply filter"
               >
@@ -254,7 +254,7 @@ export function PaymentHistoryTable() {
               </button>
               <button
                 onClick={handleClearFilter}
-                className="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 sm:px-6 rounded-xl transition-colors"
+                className="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-colors text-sm sm:text-base"
                 title="Clear date filter"
                 aria-label="Clear filter"
               >
@@ -266,15 +266,15 @@ export function PaymentHistoryTable() {
 
         {/* Table - Mobile Card View */}
         {isMobile ? (
-          <div className="space-y-3 w-full">
+          <div className="space-y-4 w-full">
             {paginatedTransactions.map((transaction) => (
               <div key={transaction.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 w-full">
-                <div className="flex justify-between items-start mb-3 w-full">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{transaction.date}</p>
-                    <p className="text-lg font-bold text-gray-900 truncate">₦{transaction.amount.toLocaleString()}</p>
+                <div className="flex justify-between items-start mb-4 w-full">
+                  <div className="min-w-0 pr-2">
+                    <p className="text-base font-medium text-gray-900 truncate">{transaction.date}</p>
+                    <p className="text-xl font-bold text-gray-900 truncate">₦{transaction.amount.toLocaleString()}</p>
                   </div>
-                  <span className={`text-sm font-medium px-3 py-1 rounded-full flex-shrink-0 ${
+                  <span className={`text-sm font-medium px-3 py-1.5 rounded-full flex-shrink-0 ${
                     transaction.status === "Successful" 
                       ? "bg-green-50 text-green-600" 
                       : "bg-red-50 text-red-500"
@@ -283,14 +283,14 @@ export function PaymentHistoryTable() {
                   </span>
                 </div>
                 
-                <div className="space-y-2 text-sm w-full">
+                <div className="space-y-3 text-sm w-full">
                   <div className="flex justify-between w-full">
-                    <span className="text-gray-500 flex-shrink-0">Lamp No.</span>
-                    <span className="text-amber-600 font-medium truncate ml-2 text-right">{transaction.lampNo}</span>
+                    <span className="text-gray-500 flex-shrink-0 text-sm">Lamp No.</span>
+                    <span className="text-amber-600 font-medium truncate ml-2 text-right max-w-[65%] text-sm">{transaction.lampNo}</span>
                   </div>
                   <div className="flex justify-between w-full">
-                    <span className="text-gray-500 flex-shrink-0">Keycode</span>
-                    <span className="text-cyan-600 font-mono text-xs break-all ml-2 text-right max-w-[60%]">
+                    <span className="text-gray-500 flex-shrink-0 text-sm">Keycode</span>
+                    <span className="text-cyan-600 font-mono text-xs break-all ml-2 text-right max-w-[65%]">
                       {transaction.keycode}
                     </span>
                   </div>
@@ -298,13 +298,13 @@ export function PaymentHistoryTable() {
                 
                 <button
                   onClick={() => handleViewReceipt(transaction)}
-                  className="w-full mt-4 flex items-center justify-center gap-2 text-sm text-amber-600 hover:text-amber-700 font-medium py-2 border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors"
+                  className="w-full mt-5 flex items-center justify-center gap-2 text-sm text-amber-600 hover:text-amber-700 font-medium py-3 border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors"
                   title={`View receipt for transaction ${transaction.id}`}
                   aria-label={`View receipt for transaction ${transaction.id}`}
                 >
                   <svg
-                    width="16"
-                    height="16"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -390,19 +390,19 @@ export function PaymentHistoryTable() {
         )}
 
         {/* Pagination */}
-        <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-4 mt-4 w-full">
-          <p className="text-sm text-gray-500 mb-3 sm:mb-0">
+        <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-5 mt-6 w-full">
+          <p className="text-sm text-gray-500 mb-4 sm:mb-0">
             Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredTransactions.length)} of {filteredTransactions.length} transactions
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Go to previous page"
               aria-label="Previous page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
@@ -412,11 +412,11 @@ export function PaymentHistoryTable() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="w-9 h-9 rounded-lg bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Go to next page"
               aria-label="Next page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>

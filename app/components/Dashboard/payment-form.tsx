@@ -182,7 +182,7 @@ export function PaymentForm() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white rounded-3xl p-4 sm:p-6 border border-gray-200 shadow-lg"
+        className="w-full max-w-md"
       >
         {/* Welcome Message with Wave Animation - Mobile Responsive */}
         <motion.div 
@@ -260,23 +260,14 @@ export function PaymentForm() {
           className="mb-4 sm:mb-6"
         >
           <label className="block text-sm font-medium text-gray-700 mb-2">Enter Amount</label>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <motion.input
-              whileFocus={{ scale: 1.01 }}
-              type="text"
-              placeholder="₦0.00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="flex-1 px-4 py-3 text-sm sm:text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all bg-white"
-            />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={buttonTap}
-              className="bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium px-4 sm:px-5 py-3 rounded-xl transition-all shadow-sm mt-2 sm:mt-0"
-            >
-              Schedule
-            </motion.button>
-          </div>
+          <motion.input
+            whileFocus={{ scale: 1.01 }}
+            type="text"
+            placeholder="₦0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full px-4 py-3 text-sm sm:text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all bg-white"
+          />
         </motion.div>
 
         {/* Pay With - Card first, Virtual Account second */}
