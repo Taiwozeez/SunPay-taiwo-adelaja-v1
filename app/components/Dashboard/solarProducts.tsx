@@ -3,86 +3,84 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { HiChevronRight } from "react-icons/hi"
+import { IoFlash, IoBatteryCharging } from "react-icons/io5"
+import { WiDaySunny } from "react-icons/wi"
 
-// Generic solar product interface
 interface SolarProduct {
   id: number
   name: string
   type: string
-  imagePath: string // Your actual image path
+  imagePath: string
   status: string
-  batteryLevel?: number // Optional for products without battery
+  batteryLevel?: number
   lastCharged?: string
-  dailyConsumption?: number // kWh
-  dailyGeneration?: number // kWh
-  gridUsage?: number // kWh
-  currentLoad?: number // kW
-  efficiency?: number // percentage
-  temperature?: number // °C
-  voltage?: number // V
+  dailyConsumption?: number
+  dailyGeneration?: number
+  gridUsage?: number
+  currentLoad?: number
+  efficiency?: number
+  temperature?: number
+  voltage?: number
   cycles?: number
-  chargeRate?: number // kW
-  dischargeRate?: number // kW
-  health?: number // percentage
+  chargeRate?: number
+  dischargeRate?: number
+  health?: number
 }
 
-// Chart data union type
-type ChartDataItem = 
+type ChartDataItem =
   | { time: string; value: number; secondaryValue: number }
   | { day: string; value: number; secondaryValue: number }
 
-// Current customer's device - PowerPlay Pro
 const currentCustomerDevice: SolarProduct = {
   id: 1,
   name: "PowerPlay Pro",
   type: "Solar Inverter System",
-  imagePath: "/images/powerplay.jpg", // Your actual image path
+  imagePath: "/images/powerplay.jpg",
   status: "System Active",
   batteryLevel: 85,
   lastCharged: "2 hours ago",
-  dailyConsumption: 12.5, // kWh
-  dailyGeneration: 8.2, // kWh
-  gridUsage: 4.3, // kWh
-  currentLoad: 2.1, // kW
-  efficiency: 94, // percentage
-  temperature: 36, // °C
-  voltage: 240, // V
-  cycles: 1250
+  dailyConsumption: 12.5,
+  dailyGeneration: 8.2,
+  gridUsage: 4.3,
+  currentLoad: 2.1,
+  efficiency: 94,
+  temperature: 36,
+  voltage: 240,
+  cycles: 1250,
 }
 
 export function SolarProductStatus() {
   const [timeFrame, setTimeFrame] = useState<"daily" | "weekly">("daily")
   const [currentTime, setCurrentTime] = useState("")
   const [imageError, setImageError] = useState(false)
-  
-  // Using current customer's device
+
   const product = currentCustomerDevice
 
-  // Update current time
   useEffect(() => {
     const updateTime = () => {
       const now = new Date()
-      setCurrentTime(now.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }))
+      setCurrentTime(
+        now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      )
     }
-    
+
     updateTime()
-    const interval = setInterval(updateTime, 60000) // Update every minute
-    
+    const interval = setInterval(updateTime, 60000)
+
     return () => clearInterval(interval)
   }, [])
 
-  // Calculate battery color
   const getBatteryColor = (percentage: number) => {
-    if (percentage >= 75) return "#10b981" // Green
-    if (percentage >= 50) return "#f59e0b" // Amber
-    if (percentage >= 25) return "#f97316" // Orange
-    return "#ef4444" // Red
+    if (percentage >= 75) return "#16A34A"
+    if (percentage >= 50) return "#F7D81A"
+    if (percentage >= 25) return "#EA580C"
+    return "#DC2626"
   }
 
-  // Generate chart data based on time frame
   const generateChartData = (): ChartDataItem[] => {
     if (timeFrame === "daily") {
       return Array.from({ length: 12 }, (_, i) => {
@@ -92,36 +90,39 @@ export function SolarProductStatus() {
         return {
           time: `${hour}:00`,
           value: Math.max(0, value),
-          secondaryValue: product.dailyGeneration ? 
-            Math.max(0, (product.dailyGeneration / 6) * (1 + Math.sin(i * 0.7) * 0.5)) : 0
+          secondaryValue: product.dailyGeneration
+            ? Math.max(0, (product.dailyGeneration / 6) * (1 + Math.sin(i * 0.7) * 0.5))
+            : 0,
         }
       })
     } else {
-      // Weekly data - FIXED: removed unused 'i' parameter
       return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
         day,
         value: (product.dailyConsumption || product.dailyGeneration || 0) * (0.8 + Math.random() * 0.4),
-        secondaryValue: product.dailyGeneration ? 
-          (product.dailyGeneration || 0) * (0.7 + Math.random() * 0.6) : 0
+        secondaryValue: product.dailyGeneration ? (product.dailyGeneration || 0) * (0.7 + Math.random() * 0.6) : 0,
       }))
     }
   }
 
   const chartData = generateChartData()
 
+  const getDeviceIcon = () => {
+    if (product.type.includes("Inverter")) return <IoFlash className="text-4xl text-primary" />
+    if (product.type.includes("Panel")) return <WiDaySunny className="text-5xl text-primary" />
+    if (product.type.includes("Battery")) return <IoBatteryCharging className="text-4xl text-primary" />
+    return <IoFlash className="text-4xl text-primary" />
+  }
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      {/* LARGE PRODUCT IMAGE AT THE VERY TOP */}
-      <div className="relative w-full h-48 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
-        {/* Product Image - Centered and Prominent */}
+    <div className="bg-card rounded-2xl border-2 border-border shadow-xl shadow-primary/5 overflow-hidden">
+      {/* Product Image Header */}
+      <div className="relative w-full h-48 bg-gradient-to-br from-secondary via-muted to-secondary">
         <div className="absolute inset-0 flex items-center justify-center p-4">
-          {/* Device Image Container */}
-          <div className="relative w-40 h-40 bg-white rounded-2xl flex items-center justify-center p-4 border-2 border-amber-200 shadow-lg">
+          <div className="relative w-40 h-40 bg-card rounded-2xl flex items-center justify-center p-4 border-2 border-border shadow-xl">
             {!imageError ? (
-              // Using Next.js Image component for optimized images
               <div className="relative w-full h-full">
-                <Image 
-                  src={product.imagePath} 
+                <Image
+                  src={product.imagePath || "/placeholder.svg"}
                   alt={product.name}
                   fill
                   className="object-contain p-2"
@@ -130,66 +131,57 @@ export function SolarProductStatus() {
                 />
               </div>
             ) : (
-              // Fallback icon if image fails to load
               <div className="flex flex-col items-center justify-center">
-                <div className="text-5xl mb-2">
-                  {product.type.includes("Inverter") ? "⚡" : 
-                   product.type.includes("Panel") ? "☀️" : 
-                   product.type.includes("Battery") ? "🔋" : "⚡"}
-                </div>
-                <p className="text-xs text-gray-500 text-center mt-2">
-                  Image unavailable
-                </p>
+                {getDeviceIcon()}
+                <p className="text-xs text-muted-foreground text-center mt-2">Image unavailable</p>
               </div>
             )}
           </div>
         </div>
-        
-        {/* Device Name Badge at Top */}
+
+        {/* Device Name Badge */}
         <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-          <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-900">{product.name}</h3>
+          <div className="bg-card/95 backdrop-blur-sm px-4 py-2 rounded-xl border border-border shadow-sm">
+            <h3 className="text-sm font-bold text-foreground">{product.name}</h3>
           </div>
           <div className="text-right">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-medium text-emerald-700">{product.status}</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success-light border border-success/30 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+              <span className="text-sm font-semibold text-success">{product.status}</span>
             </div>
-            <p className="text-xs text-gray-600 mt-1">Updated: {currentTime}</p>
+            <p className="text-xs text-muted-foreground mt-1">Updated: {currentTime}</p>
           </div>
         </div>
-        
-        {/* Device Type Badge at Bottom */}
+
+        {/* Device Type Badge */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-          <div className="bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full">
-            <p className="text-sm font-medium">{product.type}</p>
+          <div className="bg-foreground/80 backdrop-blur-sm text-card px-5 py-2 rounded-xl">
+            <p className="text-sm font-semibold">{product.type}</p>
           </div>
         </div>
       </div>
 
-      {/* Content below the image */}
+      {/* Content */}
       <div className="p-5">
-        {/* Real-time Status Grid */}
+        {/* Status Grid */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          {/* Battery Level with Visualization (if applicable) */}
+          {/* Battery Level */}
           {product.batteryLevel !== undefined && (
-            <div className="col-span-2 bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200">
+            <div className="col-span-2 bg-muted rounded-xl p-4 border border-border">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Battery Status</span>
+                  <span className="text-sm font-semibold text-foreground">Battery Status</span>
                   {product.lastCharged && (
-                    <span className="text-xs text-gray-500">• Last charged: {product.lastCharged}</span>
+                    <span className="text-xs text-muted-foreground">• Last charged: {product.lastCharged}</span>
                   )}
                 </div>
                 <span className="text-sm font-bold" style={{ color: getBatteryColor(product.batteryLevel) }}>
                   {product.batteryLevel}%
                 </span>
               </div>
-              
-              {/* Battery Visual */}
+
               <div className="relative mt-3">
-                {/* Battery outline */}
-                <div className="w-full h-8 bg-gray-200 rounded-lg overflow-hidden">
+                <div className="w-full h-8 bg-card rounded-lg overflow-hidden border border-border">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${product.batteryLevel}%` }}
@@ -198,12 +190,10 @@ export function SolarProductStatus() {
                     style={{ backgroundColor: getBatteryColor(product.batteryLevel) }}
                   />
                 </div>
-                {/* Battery tip */}
-                <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-4 bg-gray-300 rounded-r"></div>
+                <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2.5 h-5 bg-muted-foreground/40 rounded-r"></div>
               </div>
-              
-              {/* Battery markers */}
-              <div className="flex justify-between text-xs text-gray-500 mt-2">
+
+              <div className="flex justify-between text-xs text-muted-foreground mt-2 font-medium">
                 <span>0%</span>
                 <span>25%</span>
                 <span>50%</span>
@@ -214,41 +204,50 @@ export function SolarProductStatus() {
           )}
 
           {/* Primary Metric */}
-          <div className={`rounded-xl p-3 border ${
-            product.dailyConsumption 
-              ? "bg-gradient-to-br from-blue-50 to-white border-blue-200"
-              : "bg-gradient-to-br from-amber-50 to-white border-amber-200"
-          }`}>
+          <div
+            className={`rounded-xl p-4 border ${
+              product.dailyConsumption ? "bg-blue-50 border-blue-200" : "bg-secondary border-border"
+            }`}
+          >
             <div className="flex items-center justify-between mb-1">
-              <p className={`text-xs font-medium ${
-                product.dailyConsumption ? "text-blue-700" : "text-amber-700"
-              }`}>
+              <p className={`text-xs font-semibold ${product.dailyConsumption ? "text-blue-700" : "text-primary"}`}>
                 {product.dailyConsumption ? "Daily Consumption" : "Daily Generation"}
               </p>
-              <div className={`w-2 h-2 rounded-full ${
-                product.dailyConsumption ? "bg-blue-500" : "bg-amber-500"
-              } animate-pulse`}></div>
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  product.dailyConsumption ? "bg-blue-500" : "bg-primary"
+                } animate-pulse`}
+              ></div>
             </div>
-            <p className="text-lg font-bold text-gray-900">
-              {product.dailyConsumption || product.dailyGeneration} 
-              <span className="text-sm text-gray-500 ml-1">kWh</span>
+            <p className="text-lg font-bold text-foreground">
+              {product.dailyConsumption || product.dailyGeneration}
+              <span className="text-sm text-muted-foreground ml-1">kWh</span>
             </p>
           </div>
 
           {/* Secondary Metric */}
-          <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-3 border border-gray-200">
-            <p className="text-xs text-gray-500 mb-1">
-              {product.gridUsage ? "Grid Usage" : 
-               product.efficiency ? "Efficiency" : 
-               product.chargeRate ? "Charge Rate" : 
-               product.currentLoad ? "Current Load" : "Voltage"}
+          <div className="bg-muted rounded-xl p-4 border border-border">
+            <p className="text-xs text-muted-foreground font-medium mb-1">
+              {product.gridUsage
+                ? "Grid Usage"
+                : product.efficiency
+                  ? "Efficiency"
+                  : product.chargeRate
+                    ? "Charge Rate"
+                    : product.currentLoad
+                      ? "Current Load"
+                      : "Voltage"}
             </p>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-foreground">
               {product.gridUsage || product.efficiency || product.chargeRate || product.currentLoad || product.voltage}
-              <span className="text-sm text-gray-500 ml-1">
-                {product.gridUsage || product.currentLoad || product.chargeRate ? "kW" : 
-                 product.efficiency || product.batteryLevel ? "%" : 
-                 product.voltage ? "V" : ""}
+              <span className="text-sm text-muted-foreground ml-1">
+                {product.gridUsage || product.currentLoad || product.chargeRate
+                  ? "kW"
+                  : product.efficiency || product.batteryLevel
+                    ? "%"
+                    : product.voltage
+                      ? "V"
+                      : ""}
               </span>
             </p>
           </div>
@@ -257,17 +256,17 @@ export function SolarProductStatus() {
         {/* Energy Graph */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium text-gray-700">
+            <h4 className="text-sm font-semibold text-foreground">
               {timeFrame === "daily" ? "Today's Energy" : "This Week's Energy"}
             </h4>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setTimeFrame("daily")}
-                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
+                className={`text-xs font-semibold px-4 py-1.5 rounded-lg transition-all ${
                   timeFrame === "daily"
-                    ? "bg-amber-100 text-amber-700"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
                 aria-label="Show daily view"
               >
@@ -276,10 +275,10 @@ export function SolarProductStatus() {
               <button
                 type="button"
                 onClick={() => setTimeFrame("weekly")}
-                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
+                className={`text-xs font-semibold px-4 py-1.5 rounded-lg transition-all ${
                   timeFrame === "weekly"
-                    ? "bg-amber-100 text-amber-700"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
                 aria-label="Show weekly view"
               >
@@ -288,88 +287,82 @@ export function SolarProductStatus() {
             </div>
           </div>
 
-          {/* Dual Bar Chart (for generation vs consumption) */}
-          <div className="h-32 flex items-end gap-1">
+          {/* Chart */}
+          <div className="h-32 flex items-end gap-1.5 bg-muted/50 rounded-xl p-3 border border-border">
             {chartData.map((item, index) => (
               <div key={index} className="flex-1 flex flex-col items-center relative">
-                {/* Consumption bar (if applicable) */}
                 {product.dailyConsumption && (
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.min(100, (item.value / 5) * 100)}%` }}
                     transition={{ duration: 1, delay: index * 0.05 }}
-                    className="w-3/4 bg-gradient-to-t from-blue-400 to-blue-300 rounded-t-lg"
+                    className="w-3/4 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-md"
                   />
                 )}
-                
-                {/* Generation bar */}
+
                 {product.dailyGeneration && (
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.min(100, (item.secondaryValue / 5) * 100)}%` }}
                     transition={{ duration: 1, delay: index * 0.05 + 0.2 }}
-                    className="w-3/4 bg-gradient-to-t from-amber-400 to-amber-300 rounded-t-lg mt-1"
+                    className="w-3/4 bg-gradient-to-t from-primary to-accent rounded-t-md mt-1"
                   />
                 )}
-                
-                {/* Single bar for products without generation */}
+
                 {!product.dailyGeneration && !product.dailyConsumption && (
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.min(100, (item.value / 5) * 100)}%` }}
                     transition={{ duration: 1, delay: index * 0.05 }}
-                    className="w-full bg-gradient-to-t from-amber-400 to-amber-300 rounded-t-lg"
+                    className="w-full bg-gradient-to-t from-primary to-accent rounded-t-md"
                   />
                 )}
-                
-                <span className="text-xs text-gray-500 mt-1">
-                  {timeFrame === "daily" 
-                    ? (item as { time: string }).time.split(":")[0] 
-                    : (item as { day: string }).day
-                  }
+
+                <span className="text-[10px] text-muted-foreground mt-1 font-medium">
+                  {timeFrame === "daily"
+                    ? (item as { time: string }).time.split(":")[0]
+                    : (item as { day: string }).day}
                 </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Additional Status Info */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
+        {/* Additional Status */}
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4 flex-wrap">
             {product.currentLoad && (
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                Load: {product.currentLoad} kW
+                <span className="font-medium">Load: {product.currentLoad} kW</span>
               </span>
             )}
             {product.temperature && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                Temp: {product.temperature}°C
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-error"></span>
+                <span className="font-medium">Temp: {product.temperature}°C</span>
               </span>
             )}
             {product.cycles && (
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                Cycles: {product.cycles}
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-success"></span>
+                <span className="font-medium">Cycles: {product.cycles}</span>
               </span>
             )}
             {product.health && (
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                Health: {product.health}%
+                <span className="font-medium">Health: {product.health}%</span>
               </span>
             )}
           </div>
-          <button 
+          <button
             type="button"
-            className="text-amber-600 hover:text-amber-700 text-sm font-medium flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 rounded"
+            className="text-primary hover:text-accent text-sm font-semibold flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded transition-colors"
             aria-label="View device details"
           >
             View Details
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <HiChevronRight className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </div>

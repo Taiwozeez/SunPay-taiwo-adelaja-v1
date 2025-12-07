@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { PaymentForm } from "../components/Dashboard/payment-form"
 import { PaymentProgress } from "../components/Dashboard/payment-progress"
@@ -11,7 +11,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <label htmlFor="sort-select" className="text-sm text-gray-600">
             Sort By:
           </label>
@@ -24,7 +24,7 @@ export default function DashboardPage() {
             <option>This month</option>
             <option>This week</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       {/* Top Row: Payment Form + Payment Progress */}

@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { HiChevronRight } from "react-icons/hi"
 
 interface ContactCardProps {
   icon: React.ReactNode
@@ -8,27 +9,22 @@ interface ContactCardProps {
   value: string
   subtext?: string
   href?: string
-  bgColor?: string
 }
 
-export function ContactCard({ icon, title, value, subtext, href, bgColor = "bg-amber-50" }: ContactCardProps) {
+export function ContactCard({ icon, title, value, subtext, href }: ContactCardProps) {
   const content = (
-    <div
-      className={`${bgColor} rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-amber-100 hover:shadow-lg hover:border-amber-200 transition-all duration-300 group h-full`}
-    >
+    <div className="bg-card rounded-xl sm:rounded-2xl p-4 sm:p-6 border-2 border-border hover:shadow-lg hover:border-primary/30 transition-all duration-300 group h-full">
       <div className="flex items-start gap-3 sm:gap-4">
-        <div className="p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+        <div className="p-2 sm:p-3 bg-secondary rounded-lg sm:rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm text-amber-700 font-medium mb-1 truncate">{title}</p>
-          <p className="text-base sm:text-lg font-semibold text-gray-800 truncate">{value}</p>
-          {subtext && <p className="text-xs sm:text-sm text-gray-500 mt-1 truncate">{subtext}</p>}
+          <p className="text-xs sm:text-sm text-primary font-medium mb-1 truncate">{title}</p>
+          <p className="text-base sm:text-lg font-semibold text-foreground truncate">{value}</p>
+          {subtext && <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">{subtext}</p>}
         </div>
-        <div className="text-amber-400 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0">
-          <svg width="18" height="18" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 18l6-6-6-6" />
-          </svg>
+        <div className="text-primary group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0">
+          <HiChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
       </div>
     </div>

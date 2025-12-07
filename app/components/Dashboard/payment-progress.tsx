@@ -2,20 +2,20 @@
 
 import { motion } from "framer-motion"
 import type { Variants } from "framer-motion"
+import { IoFlash } from "react-icons/io5"
 
 export function PaymentProgress() {
   const progress = 5.9
-  
-  // Animation variants with proper typing
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   }
 
   const itemVariants: Variants = {
@@ -26,9 +26,9 @@ export function PaymentProgress() {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 15
-      }
-    }
+        damping: 15,
+      },
+    },
   }
 
   const progressBarVariants: Variants = {
@@ -39,9 +39,9 @@ export function PaymentProgress() {
         type: "spring",
         stiffness: 100,
         damping: 20,
-        delay: 0.3
-      }
-    }
+        delay: 0.3,
+      },
+    },
   }
 
   const statItemVariants: Variants = {
@@ -52,9 +52,9 @@ export function PaymentProgress() {
       transition: {
         type: "spring",
         stiffness: 200,
-        damping: 15
-      }
-    }
+        damping: 15,
+      },
+    },
   }
 
   const pulseVariants: Variants = {
@@ -63,41 +63,33 @@ export function PaymentProgress() {
       scale: [1, 1.05, 1],
       transition: {
         duration: 2,
-        repeat: Infinity,
+        repeat: Number.POSITIVE_INFINITY,
         repeatDelay: 0,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="bg-white rounded-2xl p-6 border border-amber-100 shadow-sm"
+      className="bg-card rounded-2xl p-6 border-2 border-border shadow-xl shadow-primary/5"
     >
-      <motion.h2 
-        variants={itemVariants}
-        className="text-xl font-bold text-gray-900 mb-6 text-center"
-      >
+      <motion.h2 variants={itemVariants} className="text-xl font-bold text-foreground mb-6 text-center">
         Payment Progress
       </motion.h2>
 
       {/* Main Progress Circle */}
-      <motion.div 
-        variants={itemVariants}
-        className="relative w-48 h-48 mx-auto mb-8"
-      >
-        {/* Background Circle */}
-        <div className="absolute inset-0 rounded-full border-8 border-gray-100" />
-        
-        {/* Progress Arc */}
+      <motion.div variants={itemVariants} className="relative w-48 h-48 mx-auto mb-8">
+        <div className="absolute inset-0 rounded-full border-8 border-muted" />
+
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
           <defs>
             <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fbbf24" />
-              <stop offset="100%" stopColor="#f59e0b" />
+              <stop offset="0%" stopColor="#F7D81A" />
+              <stop offset="100%" stopColor="#D4A617" />
             </linearGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="blur" />
@@ -107,7 +99,7 @@ export function PaymentProgress() {
               </feMerge>
             </filter>
           </defs>
-          
+
           <motion.circle
             cx="50"
             cy="50"
@@ -124,21 +116,15 @@ export function PaymentProgress() {
               type: "spring",
               stiffness: 100,
               damping: 20,
-              delay: 0.5
+              delay: 0.5,
             }}
             transform="rotate(-90 50 50)"
             filter="url(#glow)"
           />
         </svg>
 
-        {/* Center Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <motion.div
-            variants={pulseVariants}
-            initial="initial"
-            animate="pulse"
-            className="text-center"
-          >
+          <motion.div variants={pulseVariants} initial="initial" animate="pulse" className="text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -146,104 +132,95 @@ export function PaymentProgress() {
                 type: "spring",
                 stiffness: 200,
                 damping: 15,
-                delay: 0.7
+                delay: 0.7,
               }}
-              className="text-4xl font-bold text-gray-900 mb-1"
+              className="text-4xl font-bold text-foreground mb-1"
             >
               {progress}%
             </motion.div>
-            <div className="text-xs text-gray-500">Complete</div>
+            <div className="text-xs text-muted-foreground font-medium">Complete</div>
           </motion.div>
         </div>
 
-        {/* Progress Label */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
           className="absolute -bottom-6 left-0 right-0 text-center"
         >
-          <div className="inline-flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-full">
-            <div className="w-2 h-2 rounded-full bg-amber-500" />
-            <span className="text-xs font-medium text-gray-700">
-              ₦9,000 paid • ₦153,000 total
-            </span>
+          <div className="inline-flex items-center gap-2 bg-secondary px-4 py-1.5 rounded-full border border-border">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-semibold text-foreground">₦9,000 paid • ₦153,000 total</span>
           </div>
         </motion.div>
       </motion.div>
 
-      {/* Stats Grid - 2 columns layout */}
-      <motion.div 
-        variants={itemVariants}
-        className="grid grid-cols-2 gap-4 mb-6"
-      >
+      {/* Stats Grid */}
+      <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4 mb-6">
         <motion.div
           variants={statItemVariants}
           whileHover={{ scale: 1.02 }}
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+          className="bg-muted p-4 rounded-xl border border-border hover:border-accent transition-colors"
         >
-          <div className="text-xs text-gray-500 mb-1">Minimum Payment</div>
-          <div className="text-lg font-bold text-gray-900">₦2,400</div>
-          <div className="text-xs text-gray-400 mt-1">Monthly minimum</div>
+          <div className="text-xs text-muted-foreground font-medium mb-1">Minimum Payment</div>
+          <div className="text-lg font-bold text-foreground">₦2,400</div>
+          <div className="text-xs text-muted-foreground mt-1">Monthly minimum</div>
         </motion.div>
 
         <motion.div
           variants={statItemVariants}
           whileHover={{ scale: 1.02 }}
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+          className="bg-muted p-4 rounded-xl border border-border hover:border-accent transition-colors"
         >
-          <div className="text-xs text-gray-500 mb-1">Unlock Price</div>
-          <div className="text-lg font-bold text-gray-900">₦153,000</div>
-          <div className="text-xs text-gray-400 mt-1">Full payment</div>
+          <div className="text-xs text-muted-foreground font-medium mb-1">Unlock Price</div>
+          <div className="text-lg font-bold text-foreground">₦153,000</div>
+          <div className="text-xs text-muted-foreground mt-1">Full payment</div>
         </motion.div>
 
         <motion.div
           variants={statItemVariants}
           whileHover={{ scale: 1.02 }}
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+          className="bg-muted p-4 rounded-xl border border-border hover:border-accent transition-colors"
         >
-          <div className="text-xs text-gray-500 mb-1">Nominal Term</div>
-          <div className="text-lg font-bold text-gray-900">420 days</div>
-          <div className="text-xs text-gray-400 mt-1">1 year, 1 month, 24 days</div>
+          <div className="text-xs text-muted-foreground font-medium mb-1">Nominal Term</div>
+          <div className="text-lg font-bold text-foreground">420 days</div>
+          <div className="text-xs text-muted-foreground mt-1">1 year, 1 month, 24 days</div>
         </motion.div>
 
         <motion.div
           variants={statItemVariants}
           whileHover={{ scale: 1.02 }}
-          className="bg-gray-50 p-4 rounded-xl border border-gray-100"
+          className="bg-muted p-4 rounded-xl border border-border hover:border-accent transition-colors"
         >
-          <div className="text-xs text-gray-500 mb-1">Total Paid</div>
-          <div className="text-lg font-bold text-gray-900">₦9,000</div>
-          <div className="text-xs text-gray-400 mt-1">Amount paid so far</div>
+          <div className="text-xs text-muted-foreground font-medium mb-1">Total Paid</div>
+          <div className="text-lg font-bold text-foreground">₦9,000</div>
+          <div className="text-xs text-muted-foreground mt-1">Amount paid so far</div>
         </motion.div>
       </motion.div>
 
-      {/* Outstanding Balance - Full Width */}
-      <motion.div
-        variants={itemVariants}
-        className="relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-50 to-yellow-50 opacity-50" />
+      {/* Outstanding Balance */}
+      <motion.div variants={itemVariants} className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-secondary to-muted opacity-50" />
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: "100%" }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="absolute h-full bg-gradient-to-r from-amber-200/20 to-yellow-200/20"
+          className="absolute h-full bg-gradient-to-r from-primary/10 to-accent/10"
         />
-        <div className="relative p-4 rounded-xl border border-amber-200 bg-white/50 backdrop-blur-sm">
+        <div className="relative p-4 rounded-xl border-2 border-border bg-card/80 backdrop-blur-sm">
           <div className="flex justify-between items-center">
             <div>
-              <div className="text-xs text-gray-500 mb-1">Outstanding Balance</div>
+              <div className="text-xs text-muted-foreground font-medium mb-1">Outstanding Balance</div>
               <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                transition={{ 
+                transition={{
                   type: "spring",
                   stiffness: 300,
                   damping: 15,
-                  delay: 1
+                  delay: 1,
                 }}
-                className="text-2xl font-bold text-gray-900"
+                className="text-2xl font-bold text-foreground"
               >
                 ₦144,000
               </motion.div>
@@ -251,76 +228,69 @@ export function PaymentProgress() {
             <motion.div
               initial={{ rotate: -180 }}
               animate={{ rotate: 0 }}
-              transition={{ 
+              transition={{
                 type: "spring",
                 stiffness: 200,
                 damping: 15,
-                delay: 1.1
+                delay: 1.1,
               }}
-              className="text-2xl"
               aria-hidden="true"
             >
-              ⚡
+              <IoFlash className="w-8 h-8 text-primary" />
             </motion.div>
           </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="mt-2 text-xs text-gray-600"
+            className="mt-2 text-xs text-muted-foreground"
           >
-            <span className="font-medium text-amber-600">Remaining balance</span> to unlock full ownership
+            <span className="font-semibold text-primary">Remaining balance</span> to unlock full ownership
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Progress Bar Visualization */}
-      <motion.div
-        variants={itemVariants}
-        className="mt-6"
-      >
-        <div className="flex justify-between text-xs text-gray-500 mb-2">
+      {/* Progress Bar */}
+      <motion.div variants={itemVariants} className="mt-6">
+        <div className="flex justify-between text-xs text-muted-foreground mb-2 font-medium">
           <span>₦0</span>
           <span>₦153,000</span>
         </div>
-        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-3.5 bg-muted rounded-full overflow-hidden border border-border">
           <motion.div
             variants={progressBarVariants}
             initial="initial"
             animate="animate"
-            className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full relative"
+            className="h-full bg-gradient-to-r from-primary to-accent rounded-full relative"
           >
             <motion.div
               animate={{
-                boxShadow: [
-                  "0 0 0 0 rgba(245, 158, 11, 0.7)",
-                  "0 0 0 6px rgba(245, 158, 11, 0)",
-                ]
+                boxShadow: ["0 0 0 0 rgba(247, 216, 26, 0.7)", "0 0 0 8px rgba(247, 216, 26, 0)"],
               }}
               transition={{
                 duration: 1.5,
-                repeat: Infinity,
-                repeatDelay: 0.5
+                repeat: Number.POSITIVE_INFINITY,
+                repeatDelay: 0.5,
               }}
-              className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-amber-500 rounded-full"
+              className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-card border-3 border-primary rounded-full shadow-lg"
             />
           </motion.div>
         </div>
         <div className="flex justify-between mt-2">
-          <span className="text-xs font-medium text-amber-600">Paid: ₦9,000</span>
-          <span className="text-xs text-gray-500">Total: ₦153,000</span>
+          <span className="text-xs font-semibold text-primary">Paid: ₦9,000</span>
+          <span className="text-xs text-muted-foreground font-medium">Total: ₦153,000</span>
         </div>
       </motion.div>
 
       {/* Action Button */}
       <motion.button
         variants={itemVariants}
-        whileHover={{ 
+        whileHover={{
           scale: 1.02,
-          boxShadow: "0 10px 25px -5px rgba(245, 158, 11, 0.3)"
+          boxShadow: "0 15px 30px -5px rgba(247, 216, 26, 0.35)",
         }}
         whileTap={{ scale: 0.98 }}
-        className="w-full mt-6 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-semibold py-3 rounded-xl transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+        className="w-full mt-6 bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-bold py-4 rounded-xl transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         type="button"
         aria-label="Make additional payment"
       >

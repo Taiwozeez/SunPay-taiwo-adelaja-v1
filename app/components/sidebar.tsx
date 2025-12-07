@@ -3,14 +3,24 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
+import {
+  HiChevronDoubleLeft,
+  HiX,
+  HiOutlineViewGrid,
+  HiOutlineUser,
+  HiOutlineDocumentText,
+  HiOutlineSupport,
+  HiOutlineCog,
+  HiOutlineLogout,
+} from "react-icons/hi"
+import { IoSunny } from "react-icons/io5"
 
 const menuItems = [
-  { name: "Dashboard", href: "/dashboard", icon: "/images/dashboardIcon.png" },
-  { name: "Account", href: "/dashboard/account", icon: "/images/usericon.png" },
-  { name: "Payment History", href: "/dashboard/payment-history", icon: "/images/menu-board.png" },
-  { name: "Support", href: "/dashboard/support", icon: "/images/feedback.png" },
-  { name: "Settings", href: "/dashboard/settings", icon: "/images/settings.png" },
+  { name: "Dashboard", href: "/dashboard", icon: HiOutlineViewGrid },
+  { name: "Account", href: "/dashboard/account", icon: HiOutlineUser },
+  { name: "Payment History", href: "/dashboard/payment-history", icon: HiOutlineDocumentText },
+  { name: "Support", href: "/dashboard/support", icon: HiOutlineSupport },
+  { name: "Settings", href: "/dashboard/settings", icon: HiOutlineCog },
 ]
 
 interface SidebarProps {
@@ -26,14 +36,14 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
   return (
     <>
       {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+        <div
+          className="fixed inset-0 bg-foreground/30 backdrop-blur-sm z-40 lg:hidden"
           onClick={onMobileClose}
           aria-label="Close sidebar overlay"
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+            if (e.key === "Enter" || e.key === " ") {
               e.preventDefault()
               onMobileClose()
             }
@@ -43,85 +53,76 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
 
       <aside
         className={cn(
-          "h-screen bg-amber-50 border-r border-amber-200 flex flex-col transition-all duration-300 z-50 sticky top-0",
-          isCollapsed ? "w-[70px]" : "w-[220px]",
+          "h-screen bg-gradient-to-b from-secondary via-secondary/80 to-muted border-r-2 border-border flex flex-col transition-all duration-300 z-50 sticky top-0",
+          isCollapsed ? "w-[70px]" : "w-[240px]",
           "max-lg:fixed lg:sticky",
           isMobileOpen ? "left-0" : "-left-full lg:left-0",
         )}
         aria-label="Main navigation"
       >
         {/* Logo and collapse button */}
-        <div className="p-4 border-b border-amber-200 flex items-center justify-between">
-          {!isCollapsed && <span className="font-semibold text-[30px] text-amber-900">SunPay</span>}
+        <div className="p-4 border-b-2 border-border flex items-center justify-between bg-card/50">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <IoSunny className="text-primary-foreground text-lg" />
+              </div>
+              <span className="font-bold text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                SunPay
+              </span>
+            </div>
+          )}
           <button
             onClick={onToggle}
-            className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-amber-100 transition-colors"
+            className="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl hover:bg-accent/20 transition-colors text-primary"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <svg
-              className={cn("w-5 h-5 text-amber-700 transition-transform", isCollapsed && "rotate-180")}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <HiChevronDoubleLeft
+              className={cn("w-5 h-5 transition-transform", isCollapsed && "rotate-180")}
               aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-            </svg>
+            />
           </button>
           <button
             onClick={onMobileClose}
-            className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-amber-100 transition-colors"
+            className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl hover:bg-accent/20 transition-colors text-primary"
             aria-label="Close sidebar"
             title="Close sidebar"
           >
-            <svg 
-              className="w-5 h-5 text-amber-700" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <HiX className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Menu */}
-        <div className="flex-1 py-4">
+        <div className="flex-1 py-6">
           {!isCollapsed && (
-            <p className="px-4 text-[10px] font-medium text-amber-600 uppercase tracking-wider mb-2">
-              Menu
-            </p>
+            <p className="px-4 text-[11px] font-semibold text-primary uppercase tracking-widest mb-4">Menu</p>
           )}
-          <nav className="space-y-1 px-2" aria-label="Sidebar navigation">
+          <nav className="space-y-2 px-3" aria-label="Sidebar navigation">
             {menuItems.map((item) => {
               const isActive = pathname === item.href
+              const Icon = item.icon
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={onMobileClose}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
-                    isActive ? "bg-amber-200 text-amber-900 font-medium" : "text-amber-800 hover:bg-amber-100",
-                    isCollapsed && "justify-center px-2",
+                    "flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all",
+                    isActive
+                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold shadow-lg shadow-primary/25"
+                      : "text-foreground hover:bg-accent/20 hover:text-primary",
+                    isCollapsed && "justify-center px-3",
                   )}
                   title={isCollapsed ? item.name : undefined}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <Image
-                    src={item.icon || "/placeholder.svg"}
-                    alt=""
-                    width={18}
-                    height={18}
-                    className="flex-shrink-0"
+                  <Icon
+                    className={cn("w-5 h-5 flex-shrink-0", isActive && "text-primary-foreground")}
                     aria-hidden="true"
                   />
                   {!isCollapsed && <span>{item.name}</span>}
-                  {isCollapsed && (
-                    <span className="sr-only">{item.name}</span>
-                  )}
+                  {isCollapsed && <span className="sr-only">{item.name}</span>}
                 </Link>
               )
             })}
@@ -129,27 +130,18 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
         </div>
 
         {/* Logout at bottom */}
-        <div className="p-2 border-t border-amber-200">
+        <div className="p-3 border-t-2 border-border bg-card/30">
           <button
             className={cn(
-              "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors text-amber-800 hover:bg-amber-100 w-full",
-              isCollapsed && "justify-center px-2",
+              "flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-foreground hover:bg-error-light hover:text-error w-full",
+              isCollapsed && "justify-center px-3",
             )}
             aria-label="Log out"
             title="Log out"
           >
-            <Image 
-              src="/icons/logout.png" 
-              alt="" 
-              width={18} 
-              height={18} 
-              className="flex-shrink-0"
-              aria-hidden="true"
-            />
-            {!isCollapsed && <span>Log Out</span>}
-            {isCollapsed && (
-              <span className="sr-only">Log Out</span>
-            )}
+            <HiOutlineLogout className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+            {!isCollapsed && <span className="font-medium">Log Out</span>}
+            {isCollapsed && <span className="sr-only">Log Out</span>}
           </button>
         </div>
       </aside>

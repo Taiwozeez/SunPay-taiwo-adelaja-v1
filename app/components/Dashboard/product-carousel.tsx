@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 
 interface Product {
   id: number
@@ -48,76 +49,69 @@ export function ProductCarousel() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 rounded-2xl p-4 md:p-6 relative overflow-hidden h-full">
+    <div className="bg-gradient-to-br from-secondary via-muted to-secondary rounded-2xl p-4 md:p-6 relative overflow-hidden h-full border-2 border-border shadow-xl shadow-primary/5">
       {/* Background Pattern */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(251 191 36 / 0.3) 1px, transparent 0)`,
-          backgroundSize: "20px 20px",
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(247 216 26 / 0.3) 1px, transparent 0)`,
+          backgroundSize: "24px 24px",
         }}
       />
 
       <div className="relative z-10 h-full flex flex-col">
         {/* Header */}
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Check Out More Products</h2>
-          <p className="text-sm text-gray-500">Discover our solar energy solutions</p>
+          <h2 className="text-xl font-bold text-foreground">Check Out More Products</h2>
+          <p className="text-sm text-muted-foreground">Discover our solar energy solutions</p>
         </div>
 
-        {/* Carousel Container - Takes remaining space */}
-        <div className="flex-grow relative bg-white rounded-xl shadow-sm overflow-hidden">
+        {/* Carousel Container */}
+        <div className="flex-grow relative bg-card rounded-xl shadow-lg overflow-hidden border-2 border-border">
           {/* Navigation Buttons */}
           <button
             onClick={goToPrev}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 text-white flex items-center justify-center z-10 transition-colors"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-9 h-9 rounded-xl bg-card/90 hover:bg-card text-foreground flex items-center justify-center z-10 transition-all shadow-lg border border-border"
             title="Previous product"
             aria-label="Previous product"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
+            <HiChevronLeft className="w-4 h-4" aria-hidden="true" />
           </button>
 
           <button
             onClick={goToNext}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 text-white flex items-center justify-center z-10 transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 w-9 h-9 rounded-xl bg-card/90 hover:bg-card text-foreground flex items-center justify-center z-10 transition-all shadow-lg border border-border"
             title="Next product"
             aria-label="Next product"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <HiChevronRight className="w-4 h-4" aria-hidden="true" />
           </button>
 
           {/* Slides */}
           <div className="relative w-full h-full overflow-hidden">
-            <div 
+            <div
               className="flex transition-transform duration-500 ease-in-out h-full"
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
               {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="w-full flex-shrink-0 h-full"
-                >
+                <div key={product.id} className="w-full flex-shrink-0 h-full">
                   <div className="flex flex-col md:flex-row h-full">
-                    {/* Product Image - Larger on mobile, half on desktop */}
+                    {/* Product Image */}
                     <div className="h-1/2 md:h-full md:w-1/2 overflow-hidden">
-                      <div 
+                      <div
                         className="w-full h-full bg-cover bg-center"
                         style={{ backgroundImage: `url(${product.image})` }}
                       />
                     </div>
-                    
+
                     {/* Product Info */}
-                    <div className="h-1/2 md:h-full md:w-1/2 p-4 md:p-6 flex flex-col justify-center">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4">{product.description}</p>
+                    <div className="h-1/2 md:h-full md:w-1/2 p-5 md:p-6 flex flex-col justify-center bg-gradient-to-br from-card to-muted/30">
+                      <h3 className="text-lg font-bold text-foreground mb-2">{product.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
                       <div className="flex items-center justify-between mt-auto">
-                        <span className="text-amber-600 font-bold">From ₦45,000</span>
+                        <span className="text-primary font-bold text-lg">From ₦45,000</span>
                         <button
-                          className="bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                          className="bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-semibold py-2.5 px-5 rounded-xl transition-all text-sm shadow-lg"
                           title={`Learn more about ${product.name}`}
                           aria-label={`Learn more about ${product.name}`}
                         >
@@ -132,16 +126,16 @@ export function ProductCarousel() {
           </div>
         </div>
 
-        {/* Footer with Dots and View More link */}
+        {/* Footer */}
         <div className="mt-4 flex items-center justify-between">
-          {/* Dots Indicator */}
+          {/* Dots */}
           <div className="flex space-x-2">
             {products.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? 'bg-amber-500' : 'bg-gray-300'
+                className={`h-2.5 rounded-full transition-all ${
+                  index === currentIndex ? "bg-primary w-7" : "bg-muted-foreground/40 hover:bg-muted-foreground w-2.5"
                 }`}
                 title={`Go to product ${index + 1}`}
                 aria-label={`Go to product ${index + 1}`}
@@ -152,14 +146,12 @@ export function ProductCarousel() {
           {/* View More Link */}
           <a
             href="/products"
-            className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+            className="text-sm text-primary hover:text-accent font-semibold flex items-center gap-1 transition-colors"
             title="View all products"
             aria-label="View all products"
           >
             View More
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <HiChevronRight className="w-4 h-4" aria-hidden="true" />
           </a>
         </div>
       </div>

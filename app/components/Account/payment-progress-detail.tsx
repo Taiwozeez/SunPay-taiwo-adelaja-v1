@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
+import { HiCurrencyDollar, HiCheckCircle, HiCalendar, HiCash } from "react-icons/hi"
 
 export function PaymentProgressDetail() {
   const [progress] = useState(5.9)
@@ -49,14 +50,14 @@ export function PaymentProgressDetail() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="bg-white rounded-2xl border border-amber-100 shadow-lg overflow-hidden"
+      className="bg-card rounded-2xl border-2 border-border shadow-xl shadow-primary/5 overflow-hidden"
     >
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-100 p-6 border-b border-amber-100">
-        <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 mb-2">
+      {/* Header Section - themed background */}
+      <div className="bg-gradient-to-r from-secondary via-muted to-secondary p-6 border-b-2 border-border">
+        <motion.h2 variants={itemVariants} className="text-2xl font-bold text-foreground mb-2">
           Payment Progress
         </motion.h2>
-        <motion.p variants={itemVariants} className="text-gray-600">
+        <motion.p variants={itemVariants} className="text-muted-foreground">
           Track your payment journey towards full ownership
         </motion.p>
       </div>
@@ -67,14 +68,14 @@ export function PaymentProgressDetail() {
           {/* Progress Circle - Larger */}
           <div className="relative w-64 h-64 mb-6">
             {/* Background Circle */}
-            <div className="absolute inset-0 rounded-full border-[12px] border-gray-100" />
+            <div className="absolute inset-0 rounded-full border-[12px] border-muted" />
 
             {/* Progress Arc */}
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
               <defs>
                 <linearGradient id="progressGradientLarge" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#f97316" />
-                  <stop offset="50%" stopColor="#fbbf24" />
+                  <stop offset="50%" stopColor="#F7D81A" />
                   <stop offset="100%" stopColor="#22c55e" />
                 </linearGradient>
                 <filter id="glowLarge" x="-50%" y="-50%" width="200%" height="200%">
@@ -121,58 +122,58 @@ export function PaymentProgressDetail() {
                 }}
                 className="text-center"
               >
-                <div className="text-5xl font-bold text-gray-900 mb-1">{progress}%</div>
-                <div className="text-sm text-gray-500">Complete</div>
+                <div className="text-5xl font-bold text-foreground mb-1">{progress}%</div>
+                <div className="text-sm text-muted-foreground">Complete</div>
               </motion.div>
             </div>
           </div>
 
-          {/* Progress Label */}
+          {/* Progress Label - themed */}
           <motion.div
             variants={itemVariants}
-            className="inline-flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-full border border-amber-200 mb-6"
+            className="inline-flex items-center gap-2 bg-secondary px-4 py-2 rounded-full border-2 border-border mb-6"
           >
             <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-green-500" />
-            <span className="text-sm font-medium text-gray-700">$9,000 paid of $153,000 total</span>
+            <span className="text-sm font-medium text-foreground">$9,000 paid of $153,000 total</span>
           </motion.div>
 
           {/* Progress Bar */}
           <motion.div variants={itemVariants} className="w-full max-w-md">
-            <div className="flex justify-between text-sm text-gray-500 mb-2">
+            <div className="flex justify-between text-sm text-muted-foreground mb-2">
               <span>$0</span>
               <span>$153,000</span>
             </div>
-            <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-4 bg-muted rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-orange-400 via-amber-400 to-green-400 rounded-full relative"
+                className="h-full bg-gradient-to-r from-orange-400 via-primary to-green-400 rounded-full relative"
               >
                 <motion.div
                   animate={{
-                    boxShadow: ["0 0 0 0 rgba(245, 158, 11, 0.7)", "0 0 0 8px rgba(245, 158, 11, 0)"],
+                    boxShadow: ["0 0 0 0 rgba(247, 216, 26, 0.7)", "0 0 0 8px rgba(247, 216, 26, 0)"],
                   }}
                   transition={{
                     duration: 1.5,
                     repeat: Number.POSITIVE_INFINITY,
                     repeatDelay: 0.5,
                   }}
-                  className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-white border-2 border-amber-500 rounded-full"
+                  className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-card border-2 border-primary rounded-full"
                 />
               </motion.div>
             </div>
             <div className="flex justify-between mt-2">
-              <span className="text-sm font-medium text-amber-600">Paid: $9,000</span>
-              <span className="text-sm text-gray-500">Remaining: $144,000</span>
+              <span className="text-sm font-medium text-primary">Paid: $9,000</span>
+              <span className="text-sm text-muted-foreground">Remaining: $144,000</span>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Stats Grid - Better arranged in 2x2 layout */}
+        {/* Stats Grid - Better arranged in 2x2 layout - KEEPING COLORFUL */}
         <motion.div variants={itemVariants} className="mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Minimum Payment Card */}
+            {/* Minimum Payment Card - Amber */}
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
@@ -180,9 +181,7 @@ export function PaymentProgressDetail() {
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                  </svg>
+                  <HiCurrencyDollar className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Minimum Payment</div>
@@ -192,7 +191,7 @@ export function PaymentProgressDetail() {
               <div className="text-2xl font-bold text-gray-900">$2,400</div>
             </motion.div>
 
-            {/* Unlock Price Card */}
+            {/* Unlock Price Card - Green */}
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
@@ -200,9 +199,7 @@ export function PaymentProgressDetail() {
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
-                    <path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <HiCheckCircle className="w-5 h-5 text-green-500" />
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Unlock Price</div>
@@ -212,7 +209,7 @@ export function PaymentProgressDetail() {
               <div className="text-2xl font-bold text-gray-900">$153,000</div>
             </motion.div>
 
-            {/* Nominal Term Card */}
+            {/* Nominal Term Card - Blue */}
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
@@ -220,10 +217,7 @@ export function PaymentProgressDetail() {
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                  </svg>
+                  <HiCalendar className="w-5 h-5 text-blue-500" />
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Nominal Term</div>
@@ -233,7 +227,7 @@ export function PaymentProgressDetail() {
               <div className="text-2xl font-bold text-gray-900">420 days</div>
             </motion.div>
 
-            {/* Total Paid Card */}
+            {/* Total Paid Card - Purple */}
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
@@ -241,10 +235,7 @@ export function PaymentProgressDetail() {
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
-                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2" />
-                    <path d="M12 2v2m0 16v2" />
-                  </svg>
+                  <HiCash className="w-5 h-5 text-purple-500" />
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Total Paid</div>
@@ -256,42 +247,40 @@ export function PaymentProgressDetail() {
           </div>
         </motion.div>
 
-        {/* Outstanding Balance Card - Moved Below and Smaller */}
+        {/* Outstanding Balance Card - themed */}
         <motion.div variants={itemVariants} className="mb-6">
-          <div className="relative overflow-hidden rounded-xl border border-amber-200">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-50 to-yellow-50" />
+          <div className="relative overflow-hidden rounded-xl border-2 border-border">
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-muted" />
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="absolute h-full bg-gradient-to-r from-amber-200/30 to-yellow-200/30"
+              className="absolute h-full bg-gradient-to-r from-primary/20 to-accent/20"
             />
             <div className="relative p-5">
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Outstanding Balance</div>
-                  <div className="text-2xl font-bold text-gray-900">$144,000</div>
+                  <div className="text-sm text-muted-foreground mb-1">Outstanding Balance</div>
+                  <div className="text-2xl font-bold text-foreground">$144,000</div>
                 </div>
-                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-xl">
-                  ⚡
-                </div>
+                <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-xl">⚡</div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
-                <span className="font-medium text-amber-600">Remaining balance</span> to unlock full ownership
+              <div className="mt-2 text-sm text-muted-foreground">
+                <span className="font-medium text-primary">Remaining balance</span> to unlock full ownership
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Make Payment Button - Smaller */}
+        {/* Make Payment Button */}
         <motion.div variants={itemVariants} className="flex justify-center">
           <motion.button
             whileHover={{
               scale: 1.02,
-              boxShadow: "0 10px 25px -5px rgba(245, 158, 11, 0.3)",
+              boxShadow: "0 10px 25px -5px rgba(247, 216, 26, 0.3)",
             }}
             whileTap={{ scale: 0.98 }}
-            className="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-semibold py-3 px-8 rounded-xl transition-all shadow-md text-sm"
+            className="bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-semibold py-3 px-8 rounded-xl transition-all shadow-md text-sm"
           >
             Make Payment
           </motion.button>
