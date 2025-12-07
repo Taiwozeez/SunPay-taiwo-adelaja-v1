@@ -5,14 +5,42 @@ import { motion, AnimatePresence } from "framer-motion"
 import { HiCheck, HiOutlineClipboardCopy } from "react-icons/hi"
 import { BsBank2 } from "react-icons/bs"
 
+// USSD codes mapping
+const ussdCodes: Record<string, string> = {
+  "AB Microfinance Bank": "389",
+  "Access Bank": "901",
+  "Accion Microfinance Bank": "572",
+  "Wema Bank": "945",
+  "Ecobank": "326",
+  "FCMB": "329",
+  "First Bank": "894",
+  "GTBank": "737",
+  "Interswitch": "322",
+  "UBA": "919",
+  "Unity Bank": "7799",
+  "Zenith Bank": "966",
+  "Polaris Bank": "833",
+  "Keystone Bank": "7111",
+  "Union Bank": "826",
+  "Sterling Bank": "822",
+  "Stanbic Bank": "909",
+  "Heritage Bank": "745",
+  "Fidelity Bank": "770",
+  "Jaiz Bank": "773"
+}
+
 export function PaymentForm() {
-  const [payWith, setPayWith] = useState<"card" | "virtualAccount">("card")
+  const [payWith, setPayWith] = useState<"card" | "virtualAccount" | "ussd">("card")
   const [lampNo, setLampNo] = useState("")
   const [amount, setAmount] = useState("")
   const [virtualAccount, setVirtualAccount] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [waveKey, setWaveKey] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [bankSearch, setBankSearch] = useState("")
+  const [selectedBank, setSelectedBank] = useState("")
+  const [showUSSDMessage, setShowUSSDMessage] = useState(false)
+  const [suggestions, setSuggestions] = useState<string[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,6 +49,17 @@ export function PaymentForm() {
 
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (bankSearch.trim()) {
+      const filtered = Object.keys(ussdCodes).filter(bank =>
+        bank.toLowerCase().includes(bankSearch.toLowerCase())
+      )
+      setSuggestions(filtered)
+    } else {
+      setSuggestions([])
+    }
+  }, [bankSearch])
 
   const generateVirtualAccount = () => {
     if (isGenerating) return
@@ -44,6 +83,27 @@ export function PaymentForm() {
     navigator.clipboard.writeText(virtualAccount)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleGetUSSD = () => {
+    if (!bankSearch.trim()) {
+      return
+    }
+
+    // Find the exact bank name from the search input
+    const bankName = Object.keys(ussdCodes).find(bank =>
+      bank.toLowerCase().includes(bankSearch.toLowerCase())
+    )
+
+    if (bankName) {
+      setSelectedBank(bankName)
+      setShowUSSDMessage(true)
+    }
+  }
+
+  const handleSuggestionClick = (bank: string) => {
+    setBankSearch(bank)
+    setSuggestions([])
   }
 
   const containerVariants = {
@@ -154,7 +214,7 @@ export function PaymentForm() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="bg-card rounded-2xl border-2 border-border shadow-xl shadow-primary/5 p-6 sm:p-8"
+      className="bg-card rounded-2xl border border-border shadow-xl shadow-primary/5 p-6 sm:p-8"
     >
       {/* Welcome Message with Wave Animation */}
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center mb-6 sm:mb-8">
@@ -201,7 +261,7 @@ export function PaymentForm() {
           placeholder="e.g. 003842109"
           value={lampNo}
           onChange={(e) => setLampNo(e.target.value)}
-          className="w-full px-4 py-3.5 text-sm sm:text-base border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+          className="w-full px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
         />
       </motion.div>
 
@@ -214,22 +274,22 @@ export function PaymentForm() {
           placeholder="₦0.00"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="w-full px-4 py-3.5 text-sm sm:text-base border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+          className="w-full px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
         />
       </motion.div>
 
-      {/* Pay With */}
+      {/* Pay With - Updated with 3 options */}
       <motion.div variants={itemVariants} className="mb-5">
         <label className="block text-sm font-semibold text-foreground mb-2">Pay With</label>
         <motion.div
           layout
-          className="flex flex-col sm:flex-row rounded-xl overflow-hidden border-2 border-border shadow-sm bg-muted"
+          className="grid grid-cols-3 rounded-xl overflow-hidden border border-border shadow-sm bg-muted"
         >
           <motion.button
             layout
             onClick={() => setPayWith("card")}
             whileTap={buttonTap}
-            className={`flex-1 py-3.5 text-sm font-semibold transition-all relative ${
+            className={`py-3.5 text-xs sm:text-sm font-semibold transition-all relative ${
               payWith === "card"
                 ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
                 : "bg-card text-muted-foreground hover:text-foreground"
@@ -241,19 +301,34 @@ export function PaymentForm() {
           <motion.button
             layout
             onClick={() => {
+              setPayWith("ussd")
+            }}
+            whileTap={buttonTap}
+            className={`py-3.5 text-xs sm:text-sm font-semibold transition-all relative border-x border-border ${
+              payWith === "ussd"
+                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                : "bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            USSD
+          </motion.button>
+
+          <motion.button
+            layout
+            onClick={() => {
               setPayWith("virtualAccount")
               if (!virtualAccount) {
                 generateVirtualAccount()
               }
             }}
             whileTap={buttonTap}
-            className={`flex-1 py-3.5 text-sm font-semibold transition-all relative border-t-2 sm:border-t-0 sm:border-l-2 border-border ${
+            className={`py-3.5 text-xs sm:text-sm font-semibold transition-all relative ${
               payWith === "virtualAccount"
                 ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
                 : "bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span className="text-xs sm:text-sm">Generate Virtual Account</span>
+            <span className="text-xs sm:text-sm">Virtual Account</span>
           </motion.button>
         </motion.div>
       </motion.div>
@@ -309,7 +384,7 @@ export function PaymentForm() {
               whileFocus={{ scale: 1.01 }}
               type="text"
               placeholder="Card Number"
-              className="w-full px-4 py-3.5 text-sm sm:text-base border-2 border-border rounded-xl mb-3 focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+              className="w-full px-4 py-3 text-sm sm:text-base border border-border rounded-xl mb-3 focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
             />
 
             {/* MM/YY and CVV */}
@@ -318,14 +393,142 @@ export function PaymentForm() {
                 whileFocus={{ scale: 1.01 }}
                 type="text"
                 placeholder="MM/YY"
-                className="flex-1 px-4 py-3.5 text-sm sm:text-base border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+                className="flex-1 px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
               />
               <motion.input
                 whileFocus={{ scale: 1.01 }}
                 type="text"
                 placeholder="CVV"
-                className="flex-1 px-4 py-3.5 text-sm sm:text-base border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+                className="flex-1 px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
               />
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* USSD Payment Option */}
+        {payWith === "ussd" && (
+          <motion.div
+            key="ussd"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="mb-6 overflow-hidden"
+          >
+            <motion.div
+              className="border border-border rounded-2xl bg-gradient-to-br from-secondary via-muted to-secondary shadow-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="p-5 sm:p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="text-base sm:text-lg font-bold text-foreground">USSD Payment</h3>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                    <span className="text-primary-foreground text-lg font-bold">*</span>
+                  </div>
+                </div>
+
+                {/* Search for Bank */}
+                <div className="mb-4 relative">
+                  <label className="block text-sm font-semibold text-foreground mb-2">Type your bank name</label>
+                  <motion.input
+                    whileFocus={{ scale: 1.01 }}
+                    type="text"
+                    placeholder="e.g., Access Bank, Zenith Bank, GTBank..."
+                    value={bankSearch}
+                    onChange={(e) => {
+                      setBankSearch(e.target.value)
+                      setShowUSSDMessage(false)
+                    }}
+                    className="w-full px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+                  />
+                  
+                  {/* Bank Suggestions */}
+                  {suggestions.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute z-10 w-full mt-1 bg-card border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto"
+                    >
+                      {suggestions.map((bank) => (
+                        <motion.button
+                          key={bank}
+                          whileHover={{ backgroundColor: "rgba(var(--secondary), 0.5)" }}
+                          onClick={() => handleSuggestionClick(bank)}
+                          className="w-full px-4 py-3 text-left text-sm text-foreground hover:bg-secondary transition-colors first:rounded-t-xl last:rounded-b-xl border-b border-border last:border-b-0"
+                        >
+                          <div className="flex justify-between items-center">
+                            <span>{bank}</span>
+                            <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
+                              {ussdCodes[bank]}
+                            </span>
+                          </div>
+                        </motion.button>
+                      ))}
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Get USSD Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleGetUSSD}
+                  disabled={!bankSearch.trim()}
+                  className={`w-full mb-4 py-3.5 font-semibold rounded-xl transition-all ${
+                    bankSearch.trim()
+                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground hover:from-accent hover:to-primary"
+                      : "bg-muted text-muted-foreground cursor-not-allowed"
+                  }`}
+                >
+                  Get USSD Code
+                </motion.button>
+
+                {/* USSD Instruction */}
+                <AnimatePresence>
+                  {showUSSDMessage && selectedBank && ussdCodes[selectedBank] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-card rounded-xl p-5 border border-border"
+                    >
+                      <h4 className="text-sm font-bold text-foreground mb-3">Payment Instruction</h4>
+                      <div className="space-y-3">
+                        <div className="bg-muted rounded-lg p-4">
+                          <p className="text-sm text-foreground">
+                            Dear customer, to make payment through <span className="font-bold">({selectedBank})</span> dial{" "}
+                            <span className="font-mono bg-primary/20 px-2 py-1 rounded font-bold">
+                              *{ussdCodes[selectedBank]}*000 *697+Lamp Number#
+                            </span>
+                            , then enter your transfer PIN to complete the payment.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-primary/10 rounded-lg p-4">
+                          <h5 className="text-xs font-bold text-foreground mb-2">Full USSD Code:</h5>
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <code className="text-lg font-mono font-bold text-foreground break-all">
+                              *{ussdCodes[selectedBank]}*000 *697+Lamp Number#
+                            </code>
+                            <motion.button
+                              variants={copyButtonVariants}
+                              whileHover="hover"
+                              whileTap="tap"
+                              onClick={() => navigator.clipboard.writeText(`*${ussdCodes[selectedBank]}*000 *697+Lamp Number#`)}
+                              className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg text-sm font-semibold shadow-md"
+                            >
+                              <HiOutlineClipboardCopy className="w-4 h-4" />
+                              <span>Copy Code</span>
+                            </motion.button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -341,7 +544,7 @@ export function PaymentForm() {
             className="mb-6 overflow-hidden"
           >
             <motion.div
-              className="border-2 border-border rounded-2xl bg-gradient-to-br from-secondary via-muted to-secondary shadow-lg"
+              className="border border-border rounded-2xl bg-gradient-to-br from-secondary via-muted to-secondary shadow-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -397,7 +600,7 @@ export function PaymentForm() {
                             transition={{ delay: 0.2 }}
                             className="relative"
                           >
-                            <div className="bg-card rounded-xl p-4 border-2 border-border shadow-sm">
+                            <div className="bg-card rounded-xl p-4 border border-border shadow-sm">
                               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                                 <div className="flex items-center gap-3 w-full">
                                   <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center flex-shrink-0 shadow-md">
@@ -498,7 +701,7 @@ export function PaymentForm() {
         className="w-full bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-bold py-4 rounded-xl transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         type="button"
       >
-        {payWith === "card" ? "Pay Now" : "I've Made the Transfer"}
+        {payWith === "card" ? "Pay Now" : payWith === "ussd" ? "I've Dialed the USSD Code" : "I've Made the Transfer"}
       </motion.button>
     </motion.div>
   )
