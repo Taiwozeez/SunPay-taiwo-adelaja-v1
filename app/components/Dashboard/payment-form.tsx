@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { HiCheck, HiOutlineClipboardCopy } from "react-icons/hi"
 import { BsBank2 } from "react-icons/bs"
+import Image from "next/image"
 
 // USSD codes mapping
 const ussdCodes: Record<string, string> = {
@@ -37,10 +38,19 @@ export function PaymentForm() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [waveKey, setWaveKey] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [copiedUSSD, setCopiedUSSD] = useState(false)
   const [bankSearch, setBankSearch] = useState("")
   const [selectedBank, setSelectedBank] = useState("")
   const [showUSSDMessage, setShowUSSDMessage] = useState(false)
   const [suggestions, setSuggestions] = useState<string[]>([])
+  const [isValidLampNo, setIsValidLampNo] = useState(false)
+  const [ussdCodeToDial, setUssdCodeToDial] = useState("")
+
+  // Customer verification data
+  const customerData = {
+    name: "Taiwo Adelaja",
+    address: "5A Laja Estate, Off Mall road, Lekki, Lagos"
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,6 +71,22 @@ export function PaymentForm() {
     }
   }, [bankSearch])
 
+  // Verify lamp number
+  useEffect(() => {
+    if (lampNo.length === 9) {
+      const isValid = /^\d{9}$/.test(lampNo)
+      setIsValidLampNo(isValid)
+      
+      // If USSD is selected and bank is chosen, update USSD code
+      if (payWith === "ussd" && selectedBank && ussdCodes[selectedBank] && isValid) {
+        const ussdCode = `*${ussdCodes[selectedBank]}*000*697*${lampNo}#`
+        setUssdCodeToDial(ussdCode)
+      }
+    } else {
+      setIsValidLampNo(false)
+    }
+  }, [lampNo, selectedBank, payWith])
+
   const generateVirtualAccount = () => {
     if (isGenerating) return
 
@@ -73,10 +99,6 @@ export function PaymentForm() {
     }, 1500)
   }
 
-  const dueDate = new Date("2025-12-22")
-  const today = new Date()
-  const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-
   const handleCopyAccount = () => {
     if (!virtualAccount) return
 
@@ -85,12 +107,20 @@ export function PaymentForm() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleCopyUSSD = () => {
+    if (!ussdCodeToDial && !selectedBank) return
+
+    const codeToCopy = ussdCodeToDial || `*${ussdCodes[selectedBank]}*000*697*${lampNo ? lampNo : "LampNumber"}#`
+    navigator.clipboard.writeText(codeToCopy)
+    setCopiedUSSD(true)
+    setTimeout(() => setCopiedUSSD(false), 2000)
+  }
+
   const handleGetUSSD = () => {
     if (!bankSearch.trim()) {
       return
     }
 
-    // Find the exact bank name from the search input
     const bankName = Object.keys(ussdCodes).find(bank =>
       bank.toLowerCase().includes(bankSearch.toLowerCase())
     )
@@ -98,12 +128,36 @@ export function PaymentForm() {
     if (bankName) {
       setSelectedBank(bankName)
       setShowUSSDMessage(true)
+      
+      // Generate USSD code with lamp number if available and valid
+      if (lampNo.length === 9 && /^\d{9}$/.test(lampNo)) {
+        const ussdCode = `*${ussdCodes[bankName]}*000*697*${lampNo}#`
+        setUssdCodeToDial(ussdCode)
+      }
     }
   }
 
   const handleSuggestionClick = (bank: string) => {
     setBankSearch(bank)
     setSuggestions([])
+    setSelectedBank(bank)
+    
+    // Generate USSD code with lamp number if available and valid
+    if (lampNo.length === 9 && /^\d{9}$/.test(lampNo) && ussdCodes[bank]) {
+      const ussdCode = `*${ussdCodes[bank]}*000*697*${lampNo}#`
+      setUssdCodeToDial(ussdCode)
+    }
+  }
+
+  // Function to dial USSD code (for mobile)
+  const handleDialUSSD = () => {
+    if (!ussdCodeToDial) return
+    
+    // For mobile devices, this will trigger the dialer
+    window.location.href = `tel:${ussdCodeToDial}`
+    
+    // For demo purposes, show an alert
+    alert(`Dialing USSD code: ${ussdCodeToDial}\n\nOn a real mobile device, this would open your phone dialer.`)
   }
 
   const containerVariants = {
@@ -209,6 +263,10 @@ export function PaymentForm() {
     exit: { scale: 0 },
   }
 
+  const dueDate = new Date("2025-12-22")
+  const today = new Date()
+  const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -219,7 +277,7 @@ export function PaymentForm() {
       {/* Welcome Message with Wave Animation */}
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center mb-6 sm:mb-8">
         <motion.div variants={itemVariants} className="flex items-center justify-center gap-2 mb-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Hi, Taiwo Adelaja!</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Hi, {customerData.name}!</h1>
           <motion.div
             key={waveKey}
             variants={waveVariants}
@@ -232,6 +290,9 @@ export function PaymentForm() {
         </motion.div>
 
         <motion.p variants={itemVariants} className="text-muted-foreground text-xs sm:text-sm mb-1">
+          {customerData.address}
+        </motion.p>
+        <motion.p variants={itemVariants} className="text-muted-foreground text-xs sm:text-sm mb-3">
           Make payment on your device
         </motion.p>
 
@@ -252,7 +313,7 @@ export function PaymentForm() {
         </motion.div>
       </motion.div>
 
-      {/* Enter Lamp No. */}
+      {/* Enter Lamp No. with verification */}
       <motion.div variants={itemVariants} className="mb-5">
         <label className="block text-sm font-semibold text-foreground mb-2">Enter Lamp No.</label>
         <motion.input
@@ -260,9 +321,28 @@ export function PaymentForm() {
           type="text"
           placeholder="e.g. 003842109"
           value={lampNo}
-          onChange={(e) => setLampNo(e.target.value)}
-          className="w-full px-4 py-3 text-sm sm:text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent transition-all bg-input text-foreground placeholder-muted-foreground"
+          onChange={(e) => setLampNo(e.target.value.replace(/\D/g, '').slice(0, 9))}
+          className={`w-full px-4 py-3 text-sm sm:text-base border rounded-xl focus:outline-none focus:ring-2 transition-all bg-input text-foreground placeholder-muted-foreground ${
+            lampNo.length === 9 && isValidLampNo
+              ? "border-green-500 focus:ring-green-500 focus:border-green-500"
+              : lampNo.length > 0
+              ? "border-border focus:ring-ring focus:border-accent"
+              : "border-border focus:ring-ring focus:border-accent"
+          }`}
         />
+        
+        {/* Customer info verification */}
+        {lampNo.length === 9 && isValidLampNo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl"
+          >
+            <p className="text-sm font-semibold text-green-800 mb-1">Customer Verified</p>
+            <p className="text-xs text-green-700">Name: {customerData.name}</p>
+            <p className="text-xs text-green-700">Address: {customerData.address}</p>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Enter Amount */}
@@ -302,6 +382,10 @@ export function PaymentForm() {
             layout
             onClick={() => {
               setPayWith("ussd")
+              if (lampNo.length === 9 && selectedBank && ussdCodes[selectedBank]) {
+                const ussdCode = `*${ussdCodes[selectedBank]}*000*697*${lampNo}#`
+                setUssdCodeToDial(ussdCode)
+              }
             }}
             whileTap={buttonTap}
             className={`py-3.5 text-xs sm:text-sm font-semibold transition-all relative border-x border-border ${
@@ -352,29 +436,42 @@ export function PaymentForm() {
             <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-4">
               <motion.div
                 whileHover={{ y: -2, scale: 1.05 }}
-                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border p-1.5"
+                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border relative"
               >
-                <div className="w-full h-full bg-blue-900 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">VISA</span>
-                </div>
+                <Image 
+                  src="/images/visaLogo.png" 
+                  alt="VISA" 
+                  fill
+                  className="object-contain p-1"
+                  sizes="48px"
+                  priority
+                />
               </motion.div>
 
               <motion.div
                 whileHover={{ y: -2, scale: 1.05 }}
-                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border p-1.5"
+                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border relative"
               >
-                <div className="w-full h-full bg-gradient-to-r from-red-500 to-yellow-500 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">MC</span>
-                </div>
+                <Image 
+                  src="/images/mastercardLogo.png" 
+                  alt="MasterCard" 
+                  fill
+                  className="object-contain p-1"
+                  sizes="48px"
+                />
               </motion.div>
 
               <motion.div
                 whileHover={{ y: -2, scale: 1.05 }}
-                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border p-1.5"
+                className="w-12 h-8 rounded-lg overflow-hidden shadow-md flex items-center justify-center bg-card border border-border relative"
               >
-                <div className="w-full h-full bg-blue-800 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">VERVE</span>
-                </div>
+                <Image 
+                  src="/images/VerveLogo.png" 
+                  alt="VERVE" 
+                  fill
+                  className="object-contain p-1"
+                  sizes="48px"
+                />
               </motion.div>
             </motion.div>
 
@@ -500,7 +597,7 @@ export function PaymentForm() {
                           <p className="text-sm text-foreground">
                             Dear customer, to make payment through <span className="font-bold">({selectedBank})</span> dial{" "}
                             <span className="font-mono bg-primary/20 px-2 py-1 rounded font-bold">
-                              *{ussdCodes[selectedBank]}*000 *697+Lamp Number#
+                              *{ussdCodes[selectedBank]}*000*697*{lampNo ? lampNo : "LampNumber"}#
                             </span>
                             , then enter your transfer PIN to complete the payment.
                           </p>
@@ -510,19 +607,68 @@ export function PaymentForm() {
                           <h5 className="text-xs font-bold text-foreground mb-2">Full USSD Code:</h5>
                           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <code className="text-lg font-mono font-bold text-foreground break-all">
-                              *{ussdCodes[selectedBank]}*000 *697+Lamp Number#
+                              {ussdCodeToDial || `*${ussdCodes[selectedBank]}*000*697*${lampNo ? lampNo : "LampNumber"}#`}
                             </code>
-                            <motion.button
-                              variants={copyButtonVariants}
-                              whileHover="hover"
-                              whileTap="tap"
-                              onClick={() => navigator.clipboard.writeText(`*${ussdCodes[selectedBank]}*000 *697+Lamp Number#`)}
-                              className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg text-sm font-semibold shadow-md"
-                            >
-                              <HiOutlineClipboardCopy className="w-4 h-4" />
-                              <span>Copy Code</span>
-                            </motion.button>
+                            <div className="flex gap-2">
+                              <motion.button
+                                variants={copyButtonVariants}
+                                whileHover="hover"
+                                whileTap="tap"
+                                onClick={handleCopyUSSD}
+                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition-all ${
+                                  copiedUSSD
+                                    ? "bg-green-600 hover:bg-green-700 text-white"
+                                    : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+                                }`}
+                              >
+                                <AnimatePresence mode="wait">
+                                  {copiedUSSD ? (
+                                    <motion.div
+                                      key="copied"
+                                      variants={checkmarkVariants}
+                                      initial="initial"
+                                      animate="animate"
+                                      exit="exit"
+                                      className="flex items-center justify-center gap-2"
+                                    >
+                                      <HiCheck className="w-4 h-4" />
+                                      <span>Copied</span>
+                                    </motion.div>
+                                  ) : (
+                                    <motion.div
+                                      key="copy"
+                                      variants={checkmarkVariants}
+                                      initial="initial"
+                                      animate="animate"
+                                      exit="exit"
+                                      className="flex items-center justify-center gap-2"
+                                    >
+                                      <HiOutlineClipboardCopy className="w-4 h-4" />
+                                      <span>Copy</span>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </motion.button>
+                              
+                              {ussdCodeToDial && lampNo.length === 9 && (
+                                <motion.button
+                                  variants={copyButtonVariants}
+                                  whileHover="hover"
+                                  whileTap="tap"
+                                  onClick={handleDialUSSD}
+                                  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold shadow-md"
+                                >
+                                  <span>📱 Dial</span>
+                                </motion.button>
+                              )}
+                            </div>
                           </div>
+                          
+                          {lampNo && lampNo.length === 9 && (
+                            <p className="text-xs text-green-600 mt-2 font-medium">
+                              ✓ Lamp number <span className="font-bold">{lampNo}</span> included in USSD code
+                            </p>
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -619,7 +765,7 @@ export function PaymentForm() {
                                       onClick={handleCopyAccount}
                                       className={`flex items-center justify-center gap-2 transition-all shadow-md rounded-xl ${
                                         copied
-                                          ? "bg-success hover:bg-success text-white"
+                                          ? "bg-green-600 hover:bg-green-700 text-white"
                                           : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
                                       }`}
                                     >
@@ -664,7 +810,7 @@ export function PaymentForm() {
                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                               Bank Name
                             </p>
-                            <p className="text-sm font-bold text-foreground">Wema Bank</p>
+                            <p className="text-sm font-bold text-foreground">SunPay Bank</p>
                           </div>
                           <div className="bg-card rounded-xl p-4 border border-border">
                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
@@ -698,10 +844,24 @@ export function PaymentForm() {
           boxShadow: "0 15px 30px -5px rgba(247, 216, 26, 0.35)",
         }}
         whileTap={{ scale: 0.98 }}
-        className="w-full bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-bold py-4 rounded-xl transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        onClick={() => {
+          if (payWith === "ussd" && ussdCodeToDial && lampNo.length === 9) {
+            handleDialUSSD()
+          }
+        }}
+        disabled={payWith === "ussd" && (!ussdCodeToDial || lampNo.length !== 9)}
+        className={`w-full font-bold py-4 rounded-xl transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+          payWith === "ussd" && ussdCodeToDial && lampNo.length === 9
+            ? "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+            : payWith === "ussd"
+            ? "bg-muted text-muted-foreground cursor-not-allowed"
+            : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+        }`}
         type="button"
       >
-        {payWith === "card" ? "Pay Now" : payWith === "ussd" ? "I've Dialed the USSD Code" : "I've Made the Transfer"}
+        {payWith === "card" ? "Pay Now" : 
+         payWith === "ussd" ? "I've Dialed the USSD Code" : 
+         "I've Made the Transfer"}
       </motion.button>
     </motion.div>
   )
