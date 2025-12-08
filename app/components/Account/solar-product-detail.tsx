@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import type { Variants } from "framer-motion"
 import Image from "next/image"
+import Chart from "chart.js/auto"
 import {
   HiLightningBolt,
   HiSun,
@@ -105,12 +106,20 @@ const troubleshootingIssues = [
 ]
 
 export function SolarProductDetail() {
-  const [timeFrame, setTimeFrame] = useState<"monthly" | "yearly">("monthly")
+  const chartRef = useRef<HTMLCanvasElement>(null)
+  const chartInstance = useRef<Chart | null>(null)
   const [imageError, setImageError] = useState(false)
   const [activeTab, setActiveTab] = useState<"overview" | "payment" | "maintenance">("overview")
   const [showAllIssues, setShowAllIssues] = useState(false)
 
   const product = currentCustomerDevice
+
+  // Payment figures
+  const unlockPrice = 1500000; // ₦1,500,000
+  const minimumPayment = 25000; // ₦25,000
+  const totalPaid = 600000; // ₦600,000
+  const outstandingBalance = unlockPrice - totalPaid;
+  const progress = (totalPaid / unlockPrice) * 100;
 
   const getBatteryColor = (percentage: number) => {
     if (percentage >= 75) return "#10b981"
@@ -119,23 +128,116 @@ export function SolarProductDetail() {
     return "#ef4444"
   }
 
-  const generatePaymentData = (): PaymentDataItem[] => {
-    if (timeFrame === "monthly") {
-      return ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((month, i) => ({
-        month,
-        amount: 24000 + Math.random() * 6000,
-        status: i < 5 ? "Paid" : "Pending",
-      }))
-    } else {
-      return ["2022", "2023", "2024"].map((year, i) => ({
-        year,
-        amount: 288000 + Math.random() * 72000,
-        status: i < 2 ? "Paid" : "Pending",
-      }))
-    }
+  // Generate monthly payment data
+  const generatePaymentData = () => {
+    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((month, i) => ({
+      month,
+      amount: 24000 + Math.random() * 6000,
+      status: i < 5 ? "Paid" : "Pending",
+    }))
   }
 
   const paymentData = generatePaymentData()
+
+  // Initialize Chart.js
+  useEffect(() => {
+    if (activeTab === "payment" && chartRef.current) {
+      // Destroy existing chart instance if it exists
+      if (chartInstance.current) {
+        chartInstance.current.destroy()
+      }
+
+      const ctx = chartRef.current.getContext('2d')
+      if (!ctx) return
+
+      // Extract data for chart
+      const labels = paymentData.map(item => item.month)
+      const amounts = paymentData.map(item => item.amount)
+      const statusColors = paymentData.map(item => 
+        item.status === "Paid" ? "#10b981" : "#f59e0b"
+      )
+
+      chartInstance.current = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Payment Amount',
+              data: amounts,
+              backgroundColor: statusColors,
+              borderColor: statusColors.map(color => color + 'CC'),
+              borderWidth: 1,
+              borderRadius: 6,
+              borderSkipped: false,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#f8fafc',
+              bodyColor: '#f8fafc',
+              borderColor: '#334155',
+              borderWidth: 1,
+              padding: 12,
+              callbacks: {
+                label: (context) => {
+                  const item = paymentData[context.dataIndex]
+                  const amount = context.parsed.y
+                  const amountText = amount !== null ? `₦${amount.toLocaleString()}` : '₦0'
+                  return [
+                    `Amount: ${amountText}`,
+                    `Status: ${item.status}`
+                  ]
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                color: '#64748b',
+                font: {
+                  size: 11
+                }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(148, 163, 184, 0.1)',
+              },
+              ticks: {
+                color: '#64748b',
+                font: {
+                  size: 11
+                },
+                callback: function(value) {
+                  return '₦' + value.toLocaleString()
+                }
+              }
+            }
+          },
+        }
+      })
+    }
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy()
+      }
+    }
+  }, [activeTab, paymentData])
 
   // Animation variants with proper typing
   const containerVariants: Variants = {
@@ -245,7 +347,7 @@ export function SolarProductDetail() {
               <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
                 <HiShieldCheck className="w-3 h-3 text-purple-500" />
               </div>
-              <span className="text-[10px] text-gray-500 truncate">Warranty</span>
+              <span className="text-[10px] text-gray-foreground truncate">Warranty</span>
             </div>
             <div className="text-sm font-bold text-gray-900 truncate">3 Years</div>
           </div>
@@ -464,63 +566,16 @@ export function SolarProductDetail() {
               tabIndex={0}
               hidden={activeTab !== "payment"}
             >
-              {/* Time Frame Selector */}
+              {/* Time Frame Selector - Removed yearly */}
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">Payment Analysis</h3>
-                <div className="flex gap-2">
-                  {(["monthly", "yearly"] as const).map((tf) => (
-                    <button
-                      key={tf}
-                      type="button"
-                      onClick={() => setTimeFrame(tf)}
-                      className={`text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
-                        timeFrame === tf
-                          ? "bg-[#F7D81A]/20 text-[#C9A800]"
-                          : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                      }`}
-                      aria-label={`Show ${tf} view`}
-                    >
-                      {tf.charAt(0).toUpperCase() + tf.slice(1)}
-                    </button>
-                  ))}
-                </div>
+                {/* Removed yearly selector */}
               </div>
 
-              {/* Payment Chart */}
+              {/* Chart.js Chart */}
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                <div className="h-64 flex items-end gap-4 justify-between">
-                  {paymentData.map((item, index) => (
-                    <div key={index} className="flex flex-col items-center flex-1 h-full justify-end">
-                      <div className="flex flex-col items-center h-full w-full justify-end">
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{
-                            height: `${Math.min(100, (item.amount / (timeFrame === "monthly" ? 40000 : 400000)) * 100)}%`,
-                          }}
-                          transition={{ duration: 1, delay: index * 0.05 }}
-                          className={`w-10 rounded-t-lg ${
-                            item.status === "Paid"
-                              ? "bg-gradient-to-t from-green-400 to-green-300"
-                              : "bg-gradient-to-t from-[#F7D81A] to-[#FAEB5E]"
-                          }`}
-                        />
-                      </div>
-                      <div className="mt-2 text-center w-full">
-                        <span className="text-xs text-gray-500 block truncate">
-                          {timeFrame === "monthly"
-                            ? (item as { month: string }).month
-                            : (item as { year: string }).year}
-                        </span>
-                        <div className="text-xs font-medium mt-1 truncate">
-                          {item.status === "Paid" ? (
-                            <span className="text-green-600">₦{Math.round(item.amount).toLocaleString()}</span>
-                          ) : (
-                            <span className="text-[#C9A800]">₦{Math.round(item.amount).toLocaleString()}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="h-64 relative">
+                  <canvas ref={chartRef} />
                 </div>
               </div>
 
@@ -528,15 +583,15 @@ export function SolarProductDetail() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-green-50 rounded-xl p-4 border border-green-200 text-center">
                   <p className="text-sm text-green-600 mb-1 truncate">Total Paid</p>
-                  <p className="text-lg font-bold text-gray-900 truncate">₦120,000</p>
+                  <p className="text-lg font-bold text-gray-900 truncate">₦{totalPaid.toLocaleString()}</p>
                 </div>
                 <div className="bg-[#FFFEF0] rounded-xl p-4 border border-[#F7D81A]/30 text-center">
-                  <p className="text-sm text-[#C9A800] mb-1 truncate">Current Due</p>
-                  <p className="text-lg font-bold text-gray-900 truncate">₦2,400</p>
+                  <p className="text-sm text-[#C9A800] mb-1 truncate">Minimum Payment</p>
+                  <p className="text-lg font-bold text-gray-900 truncate">₦{minimumPayment.toLocaleString()}</p>
                 </div>
                 <div className="bg-blue-50 rounded-xl p-4 border border-blue-200 text-center">
-                  <p className="text-sm text-blue-600 mb-1 truncate">Remaining</p>
-                  <p className="text-lg font-bold text-gray-900 truncate">₦144,000</p>
+                  <p className="text-sm text-blue-600 mb-1 truncate">Outstanding</p>
+                  <p className="text-lg font-bold text-gray-900 truncate">₦{outstandingBalance.toLocaleString()}</p>
                 </div>
               </div>
             </motion.div>
@@ -592,13 +647,15 @@ export function SolarProductDetail() {
                         <HiDocumentText className="w-5 h-5 text-blue-500" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Warranty Renewal</p>
-                        <p className="text-sm text-gray-500">Extended warranty option</p>
+                        {/* Changed from Warranty Renewal to Warranty Period */}
+                        <p className="font-medium text-gray-900">Warranty Period</p>
+                        <p className="text-sm text-gray-500">3 years coverage</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-gray-900">15 Jan 2027</p>
-                      <p className="text-sm text-gray-500">In 2 years</p>
+                      {/* Updated to show remaining warranty period */}
+                      <p className="font-medium text-gray-900">Valid until 2027</p>
+                      <p className="text-sm text-gray-500">2 years remaining</p>
                     </div>
                   </div>
                 </div>

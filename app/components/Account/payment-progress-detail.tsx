@@ -5,7 +5,23 @@ import { useState } from "react"
 import { HiCurrencyDollar, HiCheckCircle, HiCalendar, HiCash } from "react-icons/hi"
 
 export function PaymentProgressDetail() {
-  const [progress] = useState(5.9)
+  // Updated values in Naira
+  const unlockPrice = 1500000; // ₦1,500,000
+  const minimumPayment = 25000; // ₦25,000
+  const totalPaid = 600000; // ₦600,000
+  
+  // Calculate progress and outstanding balance
+  const progress = (totalPaid / unlockPrice) * 100;
+  const outstandingBalance = unlockPrice - totalPaid;
+  
+  // Calculate remaining term in days (assuming monthly payments of minimum payment)
+  const remainingMonths = Math.ceil(outstandingBalance / minimumPayment);
+  const totalTermMonths = Math.ceil(unlockPrice / minimumPayment);
+  const paidMonths = Math.floor(totalPaid / minimumPayment);
+  const remainingTermDays = remainingMonths * 30; // Approximate 30 days per month
+  
+  const totalTermDays = totalTermMonths * 30;
+  const termDisplay = formatTerm(remainingTermDays);
 
   // Animation variants
   const containerVariants = {
@@ -43,6 +59,30 @@ export function PaymentProgressDetail() {
         damping: 15,
       },
     },
+  }
+
+  // Helper function to format Naira amounts
+  const formatNaira = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  // Helper function to format term
+  function formatTerm(days: number) {
+    const years = Math.floor(days / 365);
+    const months = Math.floor((days % 365) / 30);
+    const remainingDays = days % 30;
+    
+    const parts = [];
+    if (years > 0) parts.push(`${years} year${years > 1 ? 's' : ''}`);
+    if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
+    if (remainingDays > 0 || parts.length === 0) parts.push(`${remainingDays} day${remainingDays !== 1 ? 's' : ''}`);
+    
+    return parts.join(', ');
   }
 
   return (
@@ -122,7 +162,7 @@ export function PaymentProgressDetail() {
                 }}
                 className="text-center"
               >
-                <div className="text-5xl font-bold text-foreground mb-1">{progress}%</div>
+                <div className="text-5xl font-bold text-foreground mb-1">{progress.toFixed(1)}%</div>
                 <div className="text-sm text-muted-foreground">Complete</div>
               </motion.div>
             </div>
@@ -134,14 +174,16 @@ export function PaymentProgressDetail() {
             className="inline-flex items-center gap-2 bg-secondary px-4 py-2 rounded-full border-2 border-border mb-6"
           >
             <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-green-500" />
-            <span className="text-sm font-medium text-foreground">$9,000 paid of $153,000 total</span>
+            <span className="text-sm font-medium text-foreground">
+              {formatNaira(totalPaid)} paid of {formatNaira(unlockPrice)} total
+            </span>
           </motion.div>
 
           {/* Progress Bar */}
           <motion.div variants={itemVariants} className="w-full max-w-md">
             <div className="flex justify-between text-sm text-muted-foreground mb-2">
-              <span>$0</span>
-              <span>$153,000</span>
+              <span>₦0</span>
+              <span>{formatNaira(unlockPrice)}</span>
             </div>
             <div className="h-4 bg-muted rounded-full overflow-hidden">
               <motion.div
@@ -164,8 +206,8 @@ export function PaymentProgressDetail() {
               </motion.div>
             </div>
             <div className="flex justify-between mt-2">
-              <span className="text-sm font-medium text-primary">Paid: $9,000</span>
-              <span className="text-sm text-muted-foreground">Remaining: $144,000</span>
+              <span className="text-sm font-medium text-primary">Paid: {formatNaira(totalPaid)}</span>
+              <span className="text-sm text-muted-foreground">Remaining: {formatNaira(outstandingBalance)}</span>
             </div>
           </motion.div>
         </motion.div>
@@ -188,7 +230,7 @@ export function PaymentProgressDetail() {
                   <div className="text-xs text-gray-500">Monthly minimum due</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900">$2,400</div>
+              <div className="text-2xl font-bold text-gray-900">{formatNaira(minimumPayment)}</div>
             </motion.div>
 
             {/* Unlock Price Card - Green */}
@@ -206,7 +248,7 @@ export function PaymentProgressDetail() {
                   <div className="text-xs text-gray-500">Full ownership amount</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900">$153,000</div>
+              <div className="text-2xl font-bold text-gray-900">{formatNaira(unlockPrice)}</div>
             </motion.div>
 
             {/* Nominal Term Card - Blue */}
@@ -221,10 +263,11 @@ export function PaymentProgressDetail() {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-900">Nominal Term</div>
-                  <div className="text-xs text-gray-500">1 year, 1 month, 24 days</div>
+                  <div className="text-xs text-gray-500">Based on minimum payments</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900">420 days</div>
+              <div className="text-2xl font-bold text-gray-900">{remainingTermDays} days</div>
+              <div className="text-xs text-gray-500 mt-1">{termDisplay} remaining</div>
             </motion.div>
 
             {/* Total Paid Card - Purple */}
@@ -242,7 +285,8 @@ export function PaymentProgressDetail() {
                   <div className="text-xs text-gray-500">Amount paid so far</div>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900">$9,000</div>
+              <div className="text-2xl font-bold text-gray-900">{formatNaira(totalPaid)}</div>
+              <div className="text-xs text-gray-500 mt-1">{paidMonths} months completed</div>
             </motion.div>
           </div>
         </motion.div>
@@ -261,12 +305,15 @@ export function PaymentProgressDetail() {
               <div className="flex justify-between items-center">
                 <div>
                   <div className="text-sm text-muted-foreground mb-1">Outstanding Balance</div>
-                  <div className="text-2xl font-bold text-foreground">$144,000</div>
+                  <div className="text-2xl font-bold text-foreground">{formatNaira(outstandingBalance)}</div>
                 </div>
                 <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-xl">⚡</div>
               </div>
               <div className="mt-2 text-sm text-muted-foreground">
                 <span className="font-medium text-primary">Remaining balance</span> to unlock full ownership
+              </div>
+              <div className="mt-2 text-sm text-gray-600">
+                At {formatNaira(minimumPayment)} per month: {remainingMonths} payments remaining
               </div>
             </div>
           </div>

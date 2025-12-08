@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { ReceiptModal } from "./receipt-modal"
-import { HiDownload, HiEye, HiChevronLeft, HiChevronRight } from "react-icons/hi"
+import { HiDownload, HiEye, HiChevronLeft, HiChevronRight, HiCreditCard, HiPhone, HiCurrencyDollar } from "react-icons/hi"
 
 interface Transaction {
   id: string
   date: string
   amount: number
+  method: "debit card" | "ussd" | "sunpay"
   lampNo: string
   keycode: string
   status: "Successful" | "Failed"
@@ -19,11 +20,32 @@ const generateKeycode = (): string => {
   return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 9)}-${digits.slice(9, 12)}-${digits.slice(12, 15)}`
 }
 
+// Function to randomly select payment method
+const getRandomMethod = (): "debit card" | "ussd" | "sunpay" => {
+  const methods: ("debit card" | "ussd" | "sunpay")[] = ["debit card", "ussd", "sunpay"]
+  return methods[Math.floor(Math.random() * methods.length)]
+}
+
+// Function to get icon for payment method
+const getMethodIcon = (method: string) => {
+  switch (method) {
+    case "debit card":
+      return <HiCreditCard className="w-4 h-4" />
+    case "ussd":
+      return <HiPhone className="w-4 h-4" />
+    case "sunpay":
+      return <HiCurrencyDollar className="w-4 h-4" />
+    default:
+      return <HiCreditCard className="w-4 h-4" />
+  }
+}
+
 const allTransactions: Transaction[] = [
   {
     id: "TXN001",
     date: "1 Nov 2025",
     amount: 2000,
+    method: getRandomMethod(),
     lampNo: "LX: 4872859",
     keycode: generateKeycode(),
     status: "Successful",
@@ -32,6 +54,7 @@ const allTransactions: Transaction[] = [
     id: "TXN002",
     date: "2 Nov 2025",
     amount: 3500,
+    method: getRandomMethod(),
     lampNo: "LX: 80216847",
     keycode: "N/A",
     status: "Failed",
@@ -40,6 +63,7 @@ const allTransactions: Transaction[] = [
     id: "TXN003",
     date: "3 Nov 2025",
     amount: 1200,
+    method: getRandomMethod(),
     lampNo: "LX: 61497125",
     keycode: generateKeycode(),
     status: "Successful",
@@ -48,6 +72,7 @@ const allTransactions: Transaction[] = [
     id: "TXN004",
     date: "4 Nov 2025",
     amount: 5000,
+    method: getRandomMethod(),
     lampNo: "LX: 21547860",
     keycode: generateKeycode(),
     status: "Successful",
@@ -56,6 +81,7 @@ const allTransactions: Transaction[] = [
     id: "TXN005",
     date: "5 Nov 2025",
     amount: 1800,
+    method: getRandomMethod(),
     lampNo: "LX: 78012548",
     keycode: "N/A",
     status: "Failed",
@@ -64,6 +90,7 @@ const allTransactions: Transaction[] = [
     id: "TXN006",
     date: "6 Nov 2025",
     amount: 7000,
+    method: getRandomMethod(),
     lampNo: "LX: 34692378",
     keycode: generateKeycode(),
     status: "Successful",
@@ -72,6 +99,7 @@ const allTransactions: Transaction[] = [
     id: "TXN007",
     date: "7 Nov 2025",
     amount: 2750,
+    method: getRandomMethod(),
     lampNo: "LX: 56781234",
     keycode: generateKeycode(),
     status: "Successful",
@@ -80,6 +108,7 @@ const allTransactions: Transaction[] = [
     id: "TXN008",
     date: "8 Nov 2025",
     amount: 3100,
+    method: getRandomMethod(),
     lampNo: "LX: 91254578",
     keycode: "N/A",
     status: "Failed",
@@ -88,6 +117,7 @@ const allTransactions: Transaction[] = [
     id: "TXN009",
     date: "15 Nov 2025",
     amount: 4200,
+    method: getRandomMethod(),
     lampNo: "LX: 12345678",
     keycode: generateKeycode(),
     status: "Successful",
@@ -96,6 +126,7 @@ const allTransactions: Transaction[] = [
     id: "TXN010",
     date: "20 Nov 2025",
     amount: 6500,
+    method: getRandomMethod(),
     lampNo: "LX: 87654321",
     keycode: generateKeycode(),
     status: "Successful",
@@ -160,8 +191,15 @@ export function PaymentHistoryTable() {
 
   const handleDownloadStatement = () => {
     const csvContent = [
-      ["Date", "Amount", "Lamp No.", "Keycode", "Status"],
-      ...filteredTransactions.map((t) => [t.date, `₦${t.amount}`, t.lampNo, t.keycode, t.status]),
+      ["Date", "Amount", "Payment Method", "Lamp No.", "Keycode", "Status"],
+      ...filteredTransactions.map((t) => [
+        t.date,
+        `₦${t.amount}`,
+        t.method,
+        t.lampNo,
+        t.keycode,
+        t.status,
+      ]),
     ]
       .map((row) => row.join(","))
       .join("\n")
@@ -284,6 +322,15 @@ export function PaymentHistoryTable() {
                 </div>
 
                 <div className="space-y-3 text-sm w-full">
+                  <div className="flex justify-between items-center w-full">
+                    <span className="text-muted-foreground flex-shrink-0 text-sm">Payment Method</span>
+                    <div className="flex items-center gap-2 ml-2 text-right">
+                      {getMethodIcon(transaction.method)}
+                      <span className="text-primary font-medium truncate max-w-[65%] capitalize text-sm">
+                        {transaction.method}
+                      </span>
+                    </div>
+                  </div>
                   <div className="flex justify-between w-full">
                     <span className="text-muted-foreground flex-shrink-0 text-sm">Lamp No.</span>
                     <span className="text-primary font-medium truncate ml-2 text-right max-w-[65%] text-sm">
@@ -319,6 +366,7 @@ export function PaymentHistoryTable() {
                   <tr className="bg-secondary border-b-2 border-border">
                     <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Date</th>
                     <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Amount</th>
+                    <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Payment Method</th>
                     <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Lamp No.</th>
                     <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Keycode</th>
                     <th className="text-left py-4 px-4 text-sm font-semibold text-foreground">Status</th>
@@ -336,6 +384,12 @@ export function PaymentHistoryTable() {
                       <td className="py-4 px-4 text-sm text-foreground">{transaction.date}</td>
                       <td className="py-4 px-4 text-sm font-semibold text-foreground">
                         ₦{transaction.amount.toLocaleString()}
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2">
+                          {getMethodIcon(transaction.method)}
+                          <span className="text-sm text-foreground capitalize">{transaction.method}</span>
+                        </div>
                       </td>
                       <td className="py-4 px-4 text-sm text-primary font-medium">{transaction.lampNo}</td>
                       <td className="py-4 px-4 text-sm text-cyan-600 font-mono min-w-[180px]">{transaction.keycode}</td>

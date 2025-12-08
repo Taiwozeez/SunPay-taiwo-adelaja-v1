@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { HiChevronRight } from "react-icons/hi"
 import { IoFlash, IoBatteryCharging } from "react-icons/io5"
 import { WiDaySunny } from "react-icons/wi"
+import Chart from "chart.js/auto"
 
 interface SolarProduct {
   id: number
@@ -28,10 +29,6 @@ interface SolarProduct {
   health?: number
 }
 
-type ChartDataItem =
-  | { time: string; value: number; secondaryValue: number }
-  | { day: string; value: number; secondaryValue: number }
-
 const currentCustomerDevice: SolarProduct = {
   id: 1,
   name: "PowerPlay Pro",
@@ -51,27 +48,136 @@ const currentCustomerDevice: SolarProduct = {
 }
 
 export function SolarProductStatus() {
-  const [timeFrame, setTimeFrame] = useState<"daily" | "weekly">("daily")
-  const [currentTime, setCurrentTime] = useState("")
   const [imageError, setImageError] = useState(false)
+  const chartRef = useRef<HTMLCanvasElement>(null)
+  const chartInstance = useRef<Chart | null>(null)
 
   const product = currentCustomerDevice
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date()
-      setCurrentTime(
-        now.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      )
+    if (!chartRef.current) return
+
+    // Destroy existing chart instance if it exists
+    if (chartInstance.current) {
+      chartInstance.current.destroy()
     }
 
-    updateTime()
-    const interval = setInterval(updateTime, 60000)
+    const ctx = chartRef.current.getContext('2d')
+    if (!ctx) return
 
-    return () => clearInterval(interval)
+    // Generate time labels for today
+    const labels = Array.from({ length: 12 }, (_, i) => {
+      const hour = (i * 2 + 6) % 24
+      return `${hour}:00`
+    })
+
+    // Generate data points
+    const consumptionData = labels.map((_, i) => {
+      const baseValue = product.dailyConsumption || 0
+      const value = Math.sin(i * 0.5) * 2 + baseValue / 6
+      return Math.max(0, value)
+    })
+
+    const generationData = labels.map((_, i) => {
+      if (!product.dailyGeneration) return 0
+      return Math.max(0, (product.dailyGeneration / 6) * (1 + Math.sin(i * 0.7) * 0.5))
+    })
+
+    chartInstance.current = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Consumption',
+            data: consumptionData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#3b82f6',
+            pointRadius: 2,
+            pointHoverRadius: 4,
+          },
+          {
+            label: 'Generation',
+            data: generationData,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#10b981',
+            pointRadius: 2,
+            pointHoverRadius: 4,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#f8fafc',
+            bodyColor: '#f8fafc',
+            borderColor: '#334155',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: (context) => {
+                const value = context.parsed.y ?? 0
+                return `${context.dataset.label}: ${value.toFixed(2)} kWh`
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            ticks: {
+              color: '#64748b',
+              font: {
+                size: 10
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(148, 163, 184, 0.1)',
+            },
+            ticks: {
+              color: '#64748b',
+              font: {
+                size: 10
+              },
+              callback: function(value) {
+                return value + ' kWh'
+              }
+            }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+      }
+    })
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy()
+      }
+    }
   }, [])
 
   const getBatteryColor = (percentage: number) => {
@@ -80,31 +186,6 @@ export function SolarProductStatus() {
     if (percentage >= 25) return "#EA580C"
     return "#DC2626"
   }
-
-  const generateChartData = (): ChartDataItem[] => {
-    if (timeFrame === "daily") {
-      return Array.from({ length: 12 }, (_, i) => {
-        const hour = (i * 2 + 6) % 24
-        const baseValue = product.dailyConsumption ? product.dailyConsumption : product.dailyGeneration || 0
-        const value = Math.sin(i * 0.5) * 2 + baseValue / 6
-        return {
-          time: `${hour}:00`,
-          value: Math.max(0, value),
-          secondaryValue: product.dailyGeneration
-            ? Math.max(0, (product.dailyGeneration / 6) * (1 + Math.sin(i * 0.7) * 0.5))
-            : 0,
-        }
-      })
-    } else {
-      return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
-        day,
-        value: (product.dailyConsumption || product.dailyGeneration || 0) * (0.8 + Math.random() * 0.4),
-        secondaryValue: product.dailyGeneration ? (product.dailyGeneration || 0) * (0.7 + Math.random() * 0.6) : 0,
-      }))
-    }
-  }
-
-  const chartData = generateChartData()
 
   const getDeviceIcon = () => {
     if (product.type.includes("Inverter")) return <IoFlash className="text-4xl text-primary" />
@@ -116,9 +197,10 @@ export function SolarProductStatus() {
   return (
     <div className="bg-card rounded-2xl border-2 border-border shadow-xl shadow-primary/5 overflow-hidden">
       {/* Product Image Header */}
-      <div className="relative w-full h-48 bg-gradient-to-br from-secondary via-muted to-secondary">
+      <div className="relative w-full h-52 bg-gradient-to-br from-secondary via-muted to-secondary">
         <div className="absolute inset-0 flex items-center justify-center p-4">
-          <div className="relative w-40 h-40 bg-card rounded-2xl flex items-center justify-center p-4 border-2 border-border shadow-xl">
+          {/* Increased image size from w-40 h-40 to w-48 h-48 */}
+          <div className="relative w-48 h-48 bg-card rounded-2xl flex items-center justify-center p-4 border-2 border-border shadow-xl">
             {!imageError ? (
               <div className="relative w-full h-full">
                 <Image
@@ -145,11 +227,12 @@ export function SolarProductStatus() {
             <h3 className="text-sm font-bold text-foreground">{product.name}</h3>
           </div>
           <div className="text-right">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success-light border border-success/30 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-              <span className="text-sm font-semibold text-success">{product.status}</span>
+            {/* Made status badge smaller - reduced padding and font size */}
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-success-light border border-success/30 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+              <span className="text-xs font-semibold text-success">{product.status}</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Updated: {currentTime}</p>
+            {/* Removed updated time */}
           </div>
         </div>
 
@@ -257,74 +340,14 @@ export function SolarProductStatus() {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-sm font-semibold text-foreground">
-              {timeFrame === "daily" ? "Today's Energy" : "This Week's Energy"}
+              Today&apos;s Energy
             </h4>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setTimeFrame("daily")}
-                className={`text-xs font-semibold px-4 py-1.5 rounded-lg transition-all ${
-                  timeFrame === "daily"
-                    ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-                aria-label="Show daily view"
-              >
-                Daily
-              </button>
-              <button
-                type="button"
-                onClick={() => setTimeFrame("weekly")}
-                className={`text-xs font-semibold px-4 py-1.5 rounded-lg transition-all ${
-                  timeFrame === "weekly"
-                    ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-                aria-label="Show weekly view"
-              >
-                Weekly
-              </button>
-            </div>
+            {/* Removed weekly button */}
           </div>
 
-          {/* Chart */}
-          <div className="h-32 flex items-end gap-1.5 bg-muted/50 rounded-xl p-3 border border-border">
-            {chartData.map((item, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center relative">
-                {product.dailyConsumption && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${Math.min(100, (item.value / 5) * 100)}%` }}
-                    transition={{ duration: 1, delay: index * 0.05 }}
-                    className="w-3/4 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-md"
-                  />
-                )}
-
-                {product.dailyGeneration && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${Math.min(100, (item.secondaryValue / 5) * 100)}%` }}
-                    transition={{ duration: 1, delay: index * 0.05 + 0.2 }}
-                    className="w-3/4 bg-gradient-to-t from-primary to-accent rounded-t-md mt-1"
-                  />
-                )}
-
-                {!product.dailyGeneration && !product.dailyConsumption && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${Math.min(100, (item.value / 5) * 100)}%` }}
-                    transition={{ duration: 1, delay: index * 0.05 }}
-                    className="w-full bg-gradient-to-t from-primary to-accent rounded-t-md"
-                  />
-                )}
-
-                <span className="text-[10px] text-muted-foreground mt-1 font-medium">
-                  {timeFrame === "daily"
-                    ? (item as { time: string }).time.split(":")[0]
-                    : (item as { day: string }).day}
-                </span>
-              </div>
-            ))}
+          {/* Chart.js Chart */}
+          <div className="h-48 bg-muted/30 rounded-xl p-4 border border-border relative">
+            <canvas ref={chartRef} />
           </div>
         </div>
 

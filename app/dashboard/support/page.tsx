@@ -28,25 +28,25 @@ export default function SupportPage() {
         <ContactCard
           icon={<FaPhoneAlt className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" />}
           title="Customer Care Hotline"
-          value="+234 800 123 4567"
+          value="+234 802 772 3084"
           subtext="Mon - Fri, 8AM - 6PM"
-          href="tel:+2348001234567"
+          href="tel:+2348027723084"
         />
 
         <ContactCard
           icon={<FaWhatsapp className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" />}
           title="WhatsApp Support"
-          value="+234 901 234 5678"
+          value="+234 802 772 3084"
           subtext="Quick responses, 24/7"
-          href="https://wa.me/2349012345678"
+          href="https://wa.me/2348027723084"
         />
 
         <ContactCard
           icon={<FaEnvelope className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" />}
           title="Email Support"
-          value="support@solarcompany.com"
+          value="support@sunpay.com"
           subtext="For complaints & inquiries"
-          href="mailto:support@solarcompany.com"
+          href="mailto:support@sunpay.com"
         />
       </div>
 
