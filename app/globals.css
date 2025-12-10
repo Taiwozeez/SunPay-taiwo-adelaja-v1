@@ -223,92 +223,113 @@ body {
   }
 }
 
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-/* Updated to use the exact yellow color #F7D81A from the image */
+/* Updated to use the provided yellow color palette */
 :root {
-  --background: oklch(0.99 0.02 85);
-  --foreground: oklch(0.2 0.02 85);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 85);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.02 85);
-  --primary: oklch(0.88 0.19 90);
-  --primary-foreground: oklch(0.15 0.03 85);
-  --secondary: oklch(0.97 0.04 90);
-  --secondary-foreground: oklch(0.25 0.03 85);
-  --muted: oklch(0.97 0.03 90);
-  --muted-foreground: oklch(0.45 0.02 85);
-  --accent: oklch(0.82 0.17 85);
-  --accent-foreground: oklch(0.2 0.02 85);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.04 90);
-  --input: oklch(0.98 0.02 90);
-  --ring: oklch(0.88 0.19 90);
-  --chart-1: oklch(0.88 0.19 90);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.97 0.04 90);
-  --sidebar-foreground: oklch(0.2 0.02 85);
-  --sidebar-primary: oklch(0.88 0.19 90);
-  --sidebar-primary-foreground: oklch(0.15 0.03 85);
-  --sidebar-accent: oklch(0.93 0.06 90);
-  --sidebar-accent-foreground: oklch(0.25 0.03 85);
-  --sidebar-border: oklch(0.92 0.04 90);
-  --sidebar-ring: oklch(0.88 0.19 90);
+  --primary-yellow: #ffcb05;
+  --accent-orange: #ffa000;
+  --success-green: #28a745;
+  --neutral-black: #1a1a1a;
+  --neutral-white: #ffffff;
+  --light-bg: #f5f5f5;
+  --border-color: #e0e0e0;
+  --deep-teal: #003d4f;
+  --light-gray: #f7f9fc;
+  --primary-orange: #ffe000;
+  --primary-orange-dark: #e6bf00;
+  /* Add wine colors used in component */
+  --wine-primary: #7f1d1d;
+  --wine-light: #fef2f2;
 
-  /* Custom colors for status indicators */
-  --success: oklch(0.55 0.15 145);
-  --success-light: oklch(0.94 0.05 145);
-  --error: oklch(0.55 0.2 25);
-  --error-light: oklch(0.95 0.03 25);
+  --background: #f5f5f5;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #ffcb05;
+  --primary-foreground: #1a1a1a;
+  --secondary: #f7f9fc;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
+  --accent: #ffa000;  /* This is defined - good! */
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e0e0e0;
+  --input: #ffffff;
+  --ring: #ffcb05;
+  --chart-1: #ffcb05;
+  --chart-2: #ffa000;
+  --chart-3: #28a745;
+  --chart-4: #003d4f;
+  --chart-5: #ffe000;
+  --radius: 0.75rem;
+  --sidebar: #f7f9fc;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #ffcb05;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #ffcb05;
+
+  --success: #28a745;
+  --success-light: #d4edda;
+  --error: #dc2626;
+  --error-light: #f8d7da;
+  /* Add accent-dark for hover states */
+  --accent-dark: #cc8400;
 }
 
 .dark {
-  --background: oklch(0.18 0.02 85);
-  --foreground: oklch(0.96 0.02 90);
-  --card: oklch(0.22 0.02 85);
-  --card-foreground: oklch(0.96 0.02 90);
-  --popover: oklch(0.22 0.02 85);
-  --popover-foreground: oklch(0.96 0.02 90);
-  --primary: oklch(0.88 0.19 90);
-  --primary-foreground: oklch(0.15 0.03 85);
-  --secondary: oklch(0.28 0.03 85);
-  --secondary-foreground: oklch(0.96 0.02 90);
-  --muted: oklch(0.28 0.03 85);
-  --muted-foreground: oklch(0.7 0.02 90);
-  --accent: oklch(0.75 0.17 90);
-  --accent-foreground: oklch(0.96 0.02 90);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.35 0.03 85);
-  --input: oklch(0.28 0.03 85);
-  --ring: oklch(0.88 0.19 90);
-  --chart-1: oklch(0.88 0.19 90);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.22 0.02 85);
-  --sidebar-foreground: oklch(0.96 0.02 90);
-  --sidebar-primary: oklch(0.88 0.19 90);
-  --sidebar-primary-foreground: oklch(0.15 0.03 85);
-  --sidebar-accent: oklch(0.32 0.03 85);
-  --sidebar-accent-foreground: oklch(0.96 0.02 90);
-  --sidebar-border: oklch(0.35 0.03 85);
-  --sidebar-ring: oklch(0.88 0.19 90);
+  --background: #1a1a1a;
+  --foreground: #ffffff;
+  --card: #2a2a2a;
+  --card-foreground: #ffffff;
+  --popover: #2a2a2a;
+  --popover-foreground: #ffffff;
+  --primary: #ffcb05;
+  --primary-foreground: #1a1a1a;
+  --secondary: #333333;
+  --secondary-foreground: #ffffff;
+  --muted: #444444;
+  --muted-foreground: #cccccc;
+  --accent: #ffa000;
+  --accent-foreground: #1a1a1a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #404040;
+  --input: #2a2a2a;
+  --ring: #ffcb05;
+  --chart-1: #ffcb05;
+  --chart-2: #ffa000;
+  --chart-3: #28a745;
+  --chart-4: #003d4f;
+  --chart-5: #ffe000;
+  --sidebar: #1f1f1f;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffcb05;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #2a2a2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #404040;
+  --sidebar-ring: #ffcb05;
 
-  --success: oklch(0.6 0.15 145);
-  --success-light: oklch(0.3 0.05 145);
-  --error: oklch(0.6 0.2 25);
-  --error-light: oklch(0.3 0.05 25);
+  --success: #4ade80;
+  --success-light: #1f2937;
+  --error: #f87171;
+  --error-light: #2a1f1f;
+  /* Add dark mode variants */
+  --wine-primary: #a83232;
+  --wine-light: #2a1a1a;
+  --accent-dark: #e69500;
 }
 
 @theme inline {
@@ -350,11 +371,14 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* Added custom status colors */
   --color-success: var(--success);
   --color-success-light: var(--success-light);
   --color-error: var(--error);
   --color-error-light: var(--error-light);
+  /* Add the wine colors to theme */
+  --color-wine-primary: var(--wine-primary);
+  --color-wine-light: var(--wine-light);
+  --color-accent-dark: var(--accent-dark);
 }
 
 @layer base {

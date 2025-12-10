@@ -219,7 +219,7 @@ export function PaymentHistoryTable() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-secondary via-muted to-secondary rounded-2xl p-4 sm:p-5 md:p-6 relative overflow-hidden w-full max-w-none mx-0 border-2 border-border">
+    <div className="bg-secondary rounded-2xl p-4 sm:p-5 md:p-6 relative overflow-hidden w-full max-w-none mx-0 border-2 border-border">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-30"
@@ -239,7 +239,7 @@ export function PaymentHistoryTable() {
 
           <button
             onClick={handleDownloadStatement}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-medium py-3 px-5 rounded-xl transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-5 rounded-xl transition-colors w-full sm:w-auto"
             title="Download payment statement as CSV"
             aria-label="Download payment statement"
           >
@@ -282,7 +282,7 @@ export function PaymentHistoryTable() {
             <div className="flex gap-3 w-full sm:w-auto mt-2 sm:mt-0">
               <button
                 onClick={handleApplyFilter}
-                className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-medium py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-colors text-sm sm:text-base"
+                className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl transition-colors text-sm sm:text-base"
                 title="Apply date filter"
                 aria-label="Apply filter"
               >
@@ -443,7 +443,7 @@ export function PaymentHistoryTable() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center justify-center hover:from-accent hover:to-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Go to next page"
               aria-label="Next page"
             >

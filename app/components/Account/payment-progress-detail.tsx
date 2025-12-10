@@ -93,7 +93,7 @@ export function PaymentProgressDetail() {
       className="bg-card rounded-2xl border-2 border-border shadow-xl shadow-primary/5 overflow-hidden"
     >
       {/* Header Section - themed background */}
-      <div className="bg-gradient-to-r from-secondary via-muted to-secondary p-6 border-b-2 border-border">
+      <div className="bg-secondary p-6 border-b-2 border-border">
         <motion.h2 variants={itemVariants} className="text-2xl font-bold text-foreground mb-2">
           Payment Progress
         </motion.h2>
@@ -173,7 +173,7 @@ export function PaymentProgressDetail() {
             variants={itemVariants}
             className="inline-flex items-center gap-2 bg-secondary px-4 py-2 rounded-full border-2 border-border mb-6"
           >
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-green-500" />
+            <div className="w-3 h-3 rounded-full bg-orange-500" />
             <span className="text-sm font-medium text-foreground">
               {formatNaira(totalPaid)} paid of {formatNaira(unlockPrice)} total
             </span>
@@ -190,7 +190,7 @@ export function PaymentProgressDetail() {
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-orange-400 via-primary to-green-400 rounded-full relative"
+                className="h-full bg-primary rounded-full relative"
               >
                 <motion.div
                   animate={{
@@ -219,7 +219,7 @@ export function PaymentProgressDetail() {
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-amber-50 to-yellow-50 p-5 rounded-xl border border-amber-200"
+              className="bg-amber-50 p-5 rounded-xl border border-amber-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
@@ -237,7 +237,7 @@ export function PaymentProgressDetail() {
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200"
+              className="bg-green-50 p-5 rounded-xl border border-green-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -255,7 +255,7 @@ export function PaymentProgressDetail() {
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border border-blue-200"
+              className="bg-blue-50 p-5 rounded-xl border border-blue-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -274,7 +274,7 @@ export function PaymentProgressDetail() {
             <motion.div
               variants={statItemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-purple-50 to-violet-50 p-5 rounded-xl border border-purple-200"
+              className="bg-purple-50 p-5 rounded-xl border border-purple-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -294,12 +294,12 @@ export function PaymentProgressDetail() {
         {/* Outstanding Balance Card - themed */}
         <motion.div variants={itemVariants} className="mb-6">
           <div className="relative overflow-hidden rounded-xl border-2 border-border">
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-muted" />
+            <div className="absolute inset-0 bg-secondary" />
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="absolute h-full bg-gradient-to-r from-primary/20 to-accent/20"
+              className="absolute h-full bg-primary/20"
             />
             <div className="relative p-5">
               <div className="flex justify-between items-center">
@@ -327,7 +327,7 @@ export function PaymentProgressDetail() {
               boxShadow: "0 10px 25px -5px rgba(247, 216, 26, 0.3)",
             }}
             whileTap={{ scale: 0.98 }}
-            className="bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-semibold py-3 px-8 rounded-xl transition-all shadow-md text-sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-8 rounded-xl transition-all shadow-md text-sm"
           >
             Make Payment
           </motion.button>

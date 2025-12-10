@@ -53,7 +53,7 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
 
       <aside
         className={cn(
-          "h-screen bg-gradient-to-b from-secondary via-secondary/80 to-muted border-r-2 border-border flex flex-col transition-all duration-300 z-50 sticky top-0",
+          "h-screen bg-secondary border-r-2 border-border flex flex-col transition-all duration-300 z-50 sticky top-0",
           isCollapsed ? "w-[70px]" : "w-[240px]",
           "max-lg:fixed lg:sticky",
           isMobileOpen ? "left-0" : "-left-full lg:left-0",
@@ -64,10 +64,10 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
         <div className="p-4 border-b-2 border-border flex items-center justify-between bg-card/50">
           {!isCollapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <IoSunny className="text-primary-foreground text-lg" />
               </div>
-              <span className="font-bold text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="font-bold text-2xl text-primary">
                 SunPay
               </span>
             </div>
@@ -110,7 +110,7 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: 
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all",
                     isActive
-                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold shadow-lg shadow-primary/25"
+                      ? "bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25"
                       : "text-foreground hover:bg-accent/20 hover:text-primary",
                     isCollapsed && "justify-center px-3",
                   )}

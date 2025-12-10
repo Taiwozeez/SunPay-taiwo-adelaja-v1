@@ -332,7 +332,7 @@ export function PaymentProgress() {
       </motion.div>
 
       {/* Action Button */}
-      <motion.button
+      {/* <motion.button
         variants={itemVariants}
         whileHover={{
           scale: 1.02,
@@ -344,7 +344,7 @@ export function PaymentProgress() {
         aria-label="Make additional payment"
       >
         Make Additional Payment
-      </motion.button>
+      </motion.button> */}
     </motion.div>
   )
 }

@@ -364,10 +364,10 @@ export function PaymentForm() {
               <div 
                 className="h-full rounded-2xl border-2 p-4 flex flex-col justify-center items-center text-center"
                 style={{ 
-                  borderColor: '#7f1d1d', // Wine border color
-                  backgroundColor: '#fef2f2', // Light wine/red background
-                  color: '#7f1d1d' // Wine text color
-                }}
+  borderColor: 'var(--color-wine-primary, #7f1d1d)',
+  backgroundColor: 'var(--color-wine-light, #fef2f2)',
+  color: 'var(--color-wine-primary, #7f1d1d)'
+}}
               >
                 <h3 className="font-bold text-sm sm:text-base mb-2">
                   {paymentHints[currentHintIndex].title}
@@ -411,7 +411,7 @@ export function PaymentForm() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-secondary to-muted px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mt-1 sm:mt-2 border border-border"
+          className="inline-flex items-center gap-2 bg-secondary px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mt-1 sm:mt-2 border border-border"
         >
           <motion.div variants={pulseAnimation} initial="initial" animate="pulse" className="flex items-center gap-1.5 sm:gap-2">
             <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-primary animate-pulse"></span>
@@ -479,7 +479,7 @@ export function PaymentForm() {
             whileTap={buttonTap}
             className={`py-2.5 sm:py-3.5 text-xs font-semibold transition-all relative ${
               payWith === "card"
-                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -498,7 +498,7 @@ export function PaymentForm() {
             whileTap={buttonTap}
             className={`py-2.5 sm:py-3.5 text-xs font-semibold transition-all relative border-x border-border ${
               payWith === "ussd"
-                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -516,7 +516,7 @@ export function PaymentForm() {
             whileTap={buttonTap}
             className={`py-2.5 sm:py-3.5 text-xs font-semibold transition-all relative ${
               payWith === "virtualAccount"
-                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "bg-card text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -621,7 +621,7 @@ export function PaymentForm() {
             className="mb-5 sm:mb-6 overflow-hidden"
           >
             <motion.div
-              className="border border-border rounded-2xl bg-gradient-to-br from-secondary via-muted to-secondary shadow-lg"
+              className="border border-border rounded-2xl bg-secondary shadow-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -629,7 +629,7 @@ export function PaymentForm() {
               <div className="p-4 sm:p-5 lg:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm sm:text-base font-bold text-foreground">USSD Payment</h3>
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
                     <span className="text-primary-foreground text-sm sm:text-base lg:text-lg font-bold">*</span>
                   </div>
                 </div>
@@ -685,7 +685,7 @@ export function PaymentForm() {
                   disabled={!bankSearch.trim()}
                   className={`w-full mb-3 sm:mb-4 py-3 text-sm font-semibold rounded-xl transition-all ${
                     bankSearch.trim()
-                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground hover:from-accent hover:to-primary"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}
                 >
@@ -734,7 +734,7 @@ export function PaymentForm() {
                                   className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md transition-all flex-1 ${
                                     copiedUSSD
                                       ? "bg-green-600 hover:bg-green-700 text-white"
-                                      : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+                                      : "bg-primary hover:bg-primary/90 text-primary-foreground"
                                   }`}
                                 >
                                   <AnimatePresence mode="wait">
@@ -808,7 +808,7 @@ export function PaymentForm() {
             className="mb-5 sm:mb-6 overflow-hidden"
           >
             <motion.div
-              className="border border-border rounded-2xl bg-gradient-to-br from-secondary via-muted to-secondary shadow-lg"
+              className="border border-border rounded-2xl bg-secondary shadow-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -816,7 +816,7 @@ export function PaymentForm() {
               <div className="p-4 sm:p-5 lg:p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm sm:text-base font-bold text-foreground">Virtual Account Details</h3>
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
                     <BsBank2 className="text-primary-foreground text-sm sm:text-base lg:text-lg" />
                   </div>
                 </div>
@@ -867,7 +867,7 @@ export function PaymentForm() {
                             <div className="bg-card rounded-xl p-3 sm:p-4 border border-border shadow-sm">
                               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3">
                                 <div className="flex items-center gap-2.5 sm:gap-3 w-full">
-                                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center flex-shrink-0 shadow-md">
+                                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 shadow-md">
                                     <BsBank2 className="text-primary-foreground text-xs sm:text-sm" />
                                   </div>
                                   <div className="flex-1 min-w-0">
@@ -884,7 +884,7 @@ export function PaymentForm() {
                                       className={`flex items-center justify-center gap-1.5 transition-all shadow-md rounded-xl ${
                                         copied
                                           ? "bg-green-600 hover:bg-green-700 text-white"
-                                          : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+                                          : "bg-primary hover:bg-primary/90 text-primary-foreground"
                                       }`}
                                     >
                                       <AnimatePresence mode="wait">
@@ -970,10 +970,10 @@ export function PaymentForm() {
         disabled={payWith === "ussd" && (!ussdCodeToDial || lampNo.length !== 9)}
         className={`w-full font-bold py-3.5 sm:py-4 rounded-xl transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base ${
           payWith === "ussd" && ussdCodeToDial && lampNo.length === 9
-            ? "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+            ? "bg-primary hover:bg-primary/90 text-primary-foreground"
             : payWith === "ussd"
             ? "bg-muted text-muted-foreground cursor-not-allowed"
-            : "bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground"
+            : "bg-primary hover:bg-primary/90 text-primary-foreground"
         }`}
         type="button"
       >

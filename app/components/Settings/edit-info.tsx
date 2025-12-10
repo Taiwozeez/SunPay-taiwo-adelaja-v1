@@ -88,7 +88,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
         />
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg font-medium hover:from-accent hover:to-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
+          className="px-4 sm:px-6 py-1.5 sm:py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
           type="button"
           aria-label="Upload photo"
         >
@@ -248,7 +248,7 @@ export function EditInfo({ profileImage, onImageChange, onSave, onCancel }: Edit
             <button
               onClick={handleSave}
               disabled={isSaving || !isEmailValid}
-              className="flex-1 sm:flex-none px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg font-medium hover:from-accent hover:to-primary transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
+              className="flex-1 sm:flex-none px-4 sm:px-5 py-2 sm:py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
               type="button"
               aria-label={isSaving ? "Saving changes..." : "Save changes"}
             >

@@ -16,7 +16,7 @@ export default function SupportPage() {
     <div className="p-4 sm:p-5 md:p-6 lg:p-8 space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto px-2 sm:px-4">
-        <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl sm:rounded-2xl mb-4 shadow-lg">
+        <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-amber-400 rounded-xl sm:rounded-2xl mb-4 shadow-lg">
           <FaUsers className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
         </div>
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">How Can We Help You?</h1>
@@ -79,7 +79,7 @@ export default function SupportPage() {
           </div>
 
           {/* Operating Hours */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white">
+          <div className="bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center gap-2">
               <FaClock className="w-5 h-5 text-amber-400" />
               Operating Hours

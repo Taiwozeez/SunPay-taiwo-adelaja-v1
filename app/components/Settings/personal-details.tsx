@@ -45,7 +45,7 @@ export function PersonalDetails({ profileImage }: PersonalDetailsProps) {
       {/* User Information List */}
       <div className="flex-1">
         <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6">Account Information</h3>
-        <div className="bg-gradient-to-br from-secondary to-muted rounded-xl border-2 border-border overflow-hidden">
+        <div className="bg-secondary rounded-xl border-2 border-border overflow-hidden">
           {userInfo.map((item, index) => (
             <div
               key={item.label}

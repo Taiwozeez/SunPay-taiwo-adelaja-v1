@@ -76,16 +76,16 @@ export function SupportForm() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-secondary via-muted to-secondary rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-border relative overflow-hidden">
+    <div className="bg-secondary rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-border relative overflow-hidden">
       {/* Decorative pattern */}
       <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-primary/30 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-tr from-primary/30 to-transparent rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-primary/30 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-primary/30 rounded-full translate-y-1/2 -translate-x-1/2" />
       </div>
 
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-4 sm:mb-6">
-          <div className="p-2 sm:p-3 bg-gradient-to-r from-primary to-accent rounded-lg sm:rounded-xl">
+          <div className="p-2 sm:p-3 bg-primary rounded-lg sm:rounded-xl">
             <HiChatAlt2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
           </div>
           <div className="min-w-0">
@@ -228,7 +228,7 @@ export function SupportForm() {
               type="submit"
               disabled={isSubmitting}
               aria-label={isSubmitting ? "Sending message..." : "Send message"}
-              className="w-full py-3 sm:py-4 bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-semibold rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
+              className="w-full py-3 sm:py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-sm sm:text-base"
             >
               {isSubmitting ? (
                 <>

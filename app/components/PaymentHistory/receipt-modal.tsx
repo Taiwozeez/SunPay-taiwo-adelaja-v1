@@ -43,8 +43,8 @@ export function ReceiptModal({ isOpen, onClose, transaction }: ReceiptModalProps
 
       {/* Modal */}
       <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border-2 border-border">
-        {/* Header - using gradient with primary */}
-        <div className="bg-gradient-to-r from-primary to-accent px-6 py-4 flex items-center justify-between">
+        {/* Header - using solid primary color */}
+        <div className="bg-primary px-6 py-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-primary-foreground">Payment Receipt</h2>
           <button
             onClick={onClose}
@@ -119,7 +119,7 @@ export function ReceiptModal({ isOpen, onClose, transaction }: ReceiptModalProps
           <div className="mt-6 flex gap-3">
             <button
               onClick={handlePrint}
-              className="flex-1 bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
               title="Print this receipt"
               aria-label="Print receipt"
             >
